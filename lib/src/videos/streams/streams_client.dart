@@ -148,7 +148,8 @@ class StreamsClient {
       }
 
       // Content length
-      var contentLength = streamInfo.contentLength ?? await _httpClient.getContentLength(url, validate: false) ?? 0;
+      var contentLength =
+          streamInfo.contentLength ?? await _httpClient.getContentLengthCustom(url, validate: false) ?? 0;
 
       if (contentLength <= 0) {
         continue;
