@@ -145,9 +145,10 @@ class YoutubeHttpClient extends http.BaseClient {
   }
 
   Future<int?> getContentLengthCustom(dynamic url,
-      {Map<String, String> headers = const {}, bool validate = true}) async {
-    var response = await post(Uri.parse("http://127.0.0.1:3000/callApi"),
-        headers: headers, body: <String, String>{"api": url.toString()});
+      {Map<String, String> headers = const {},
+      bool validate = true,
+      String customApi = 'http://127.0.0.1:3000/callApi'}) async {
+    var response = await post(Uri.parse(customApi), headers: headers, body: <String, String>{"api": url.toString()});
 
     if (validate) {
       _validateResponse(response, response.statusCode);

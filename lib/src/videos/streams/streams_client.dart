@@ -130,7 +130,8 @@ class StreamsClient {
     return StreamContext(streamInfoProviders, cipherOperations);
   }
 
-  Future<StreamManifest> _getManifest(StreamContext streamContext) async {
+  Future<StreamManifest> _getManifest(StreamContext streamContext,
+      {String customApi = 'http://127.0.0.1:3000/callApi'}) async {
     // To make sure there are no duplicates streams, group them by tag
     var streams = <int, StreamInfo>{};
 
@@ -148,8 +149,9 @@ class StreamsClient {
       }
 
       // Content length
-      var contentLength =
-          streamInfo.contentLength ?? await _httpClient.getContentLengthCustom(url, validate: false) ?? 0;
+      var contentLength = streamInfo.contentLength ??
+          await _httpClient.getContentLengthCustom(url, validate: false, customApi: customApi) ??
+          0;
 
       if (contentLength <= 0) {
         continue;
@@ -217,10 +219,13 @@ class StreamsClient {
     return _getManifest(context);
   }
 
-  Future<StreamManifest> getManifestFromYoutubeApiResult(String apiResult) async {
+  // TODO Choose a better name for this. This only uses youtube api results to create manifest
+  // Manifest needs to call customApi to find content length in some cases.
+  Future<StreamManifest> getManifestFromYoutubeApiResult(String apiResult,
+      {String customApi = 'http://127.0.0.1:3000/callApi'}) async {
     try {
       final context = await _getStreamContextFromYoutubeApiData(apiResult);
-      return _getManifest(context);
+      return _getManifest(context, customApi: customApi);
     } on YoutubeExplodeException {
       //TODO: ignore
     }
