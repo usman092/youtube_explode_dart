@@ -23,24 +23,15 @@ class EmbeddedPlayerClient {
   late final bool isVideoAvailable = status.toLowerCase() == 'ok';
 
   ///
-  late final Iterable<_StreamInfo> muxedStreams = root
-          .get('streamingData')
-          ?.getList('formats')
-          ?.map((e) => _StreamInfo(e)) ??
-      const [];
+  late final Iterable<_StreamInfo> muxedStreams =
+      root.get('streamingData')?.getList('formats')?.map((e) => _StreamInfo(e)) ?? const [];
 
   ///
-  late final Iterable<_StreamInfo> adaptiveStreams = root
-          .get('streamingData')
-          ?.getList('adaptiveFormats')
-          ?.map((e) => _StreamInfo(e)) ??
-      const [];
+  late final Iterable<_StreamInfo> adaptiveStreams =
+      root.get('streamingData')?.getList('adaptiveFormats')?.map((e) => _StreamInfo(e)) ?? const [];
 
   ///
-  late final Iterable<_StreamInfo> streams = [
-    ...muxedStreams,
-    ...adaptiveStreams
-  ];
+  late final Iterable<_StreamInfo> streams = [...muxedStreams, ...adaptiveStreams];
 
   ///
   EmbeddedPlayerClient(this.root);
@@ -50,15 +41,10 @@ class EmbeddedPlayerClient {
 
   ///
   @alwaysThrows
-  static Future<EmbeddedPlayerClient> get(
-      YoutubeHttpClient httpClient, String videoId) {
+  static Future<EmbeddedPlayerClient> get(YoutubeHttpClient httpClient, String videoId) {
     final body = {
       'context': const {
-        'client': {
-          'hl': 'en',
-          'clientName': 'ANDROID_EMBEDDED_PLAYER',
-          'clientVersion': '16.05'
-        }
+        'client': {'hl': 'en', 'clientName': 'ANDROID_EMBEDDED_PLAYER', 'clientVersion': '16.05'}
       },
       'videoId': videoId
     };
@@ -68,16 +54,13 @@ class EmbeddedPlayerClient {
     return retry(() async {
       final raw = await httpClient.post(url,
           body: json.encode(body),
-          headers: {
-            'X-Goog-Api-Key': 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8'
-          },
+          headers: {'X-Goog-Api-Key': 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8'},
           validate: true);
 
       var result = EmbeddedPlayerClient.parse(raw.body);
 
       if (!result.isVideoAvailable) {
-        throw VideoUnplayableException.unplayable(VideoId(videoId),
-            reason: result.reason);
+        throw VideoUnplayableException.unplayable(VideoId(videoId), reason: result.reason);
       }
       return result;
     });
@@ -94,9 +77,8 @@ class _StreamInfo extends StreamInfoProvider {
   late final String url = root['url']!;
 
   @override
-  late final int? contentLength = int.tryParse(root['contentLength'] ??
-      StreamInfoProvider.contentLenExp.firstMatch(url)?.group(1) ??
-      '');
+  late final int? contentLength =
+      int.tryParse(root['contentLength'] ?? StreamInfoProvider.contentLenExp.firstMatch(url)?.group(1) ?? '');
 
   @override
   late final int bitrate = root['bitrate']!;
@@ -106,11 +88,8 @@ class _StreamInfo extends StreamInfoProvider {
   @override
   late final String container = mimeType.subtype;
 
-  late final List<String> codecs = mimeType.parameters['codecs']!
-      .split(',')
-      .map((e) => e.trim())
-      .toList()
-      .cast<String>();
+  late final List<String> codecs =
+      mimeType.parameters['codecs']!.split(',').map((e) => e.trim()).toList().cast<String>();
 
   @override
   late final String audioCodec = codecs.last;

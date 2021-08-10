@@ -25,10 +25,8 @@ class StreamsClient {
   /// Initializes an instance of [StreamsClient]
   StreamsClient(this._httpClient);
 
-  Future<DashManifest> _getDashManifest(
-      Uri dashManifestUrl, Iterable<CipherOperation> cipherOperations) {
-    var signature =
-        DashManifest.getSignatureFromUrl(dashManifestUrl.toString());
+  Future<DashManifest> _getDashManifest(Uri dashManifestUrl, Iterable<CipherOperation> cipherOperations) {
+    var signature = DashManifest.getSignatureFromUrl(dashManifestUrl.toString());
     if (!signature.isNullOrWhiteSpace) {
       signature = cipherOperations.decipher(signature!);
       dashManifestUrl = dashManifestUrl.setQueryParam('signature', signature);
@@ -81,10 +79,14 @@ class StreamsClient {
     return StreamContext(streamInfoProviders, cipherOperations);
   }*/
 
-  Future<StreamContext> _getStreamContextFromEmbeddedClient(
-      VideoId videoId) async {
+  Future<StreamContext> _getStreamContextFromEmbeddedClient(VideoId videoId) async {
     final page = await EmbeddedPlayerClient.get(_httpClient, videoId.value);
 
+    return StreamContext(page.streams.toList(), const []);
+  }
+
+  Future<StreamContext> _getStreamContextFromYoutubeApiData(String apiData) async {
+    final page = EmbeddedPlayerClient.parse(apiData);
     return StreamContext(page.streams.toList(), const []);
   }
 
@@ -93,28 +95,23 @@ class StreamsClient {
 
     final playerConfig = watchPage.playerConfig;
 
-    var playerResponse =
-        watchPage.playerResponse ?? playerConfig?.playerResponse;
+    var playerResponse = watchPage.playerResponse ?? playerConfig?.playerResponse;
     if (playerResponse == null) {
       throw VideoUnplayableException.unplayable(videoId);
     }
 
     var previewVideoId = playerResponse.previewVideoId;
     if (!previewVideoId.isNullOrWhiteSpace) {
-      throw VideoRequiresPurchaseException.preview(
-          videoId, VideoId(previewVideoId!));
+      throw VideoRequiresPurchaseException.preview(videoId, VideoId(previewVideoId!));
     }
 
     var playerSourceUrl = watchPage.sourceUrl ?? playerConfig?.sourceUrl;
-    var playerSource = !playerSourceUrl.isNullOrWhiteSpace
-        ? await PlayerSource.get(_httpClient, playerSourceUrl!)
-        : null;
-    var cipherOperations =
-        playerSource?.getCipherOperations() ?? const <CipherOperation>[];
+    var playerSource =
+        !playerSourceUrl.isNullOrWhiteSpace ? await PlayerSource.get(_httpClient, playerSourceUrl!) : null;
+    var cipherOperations = playerSource?.getCipherOperations() ?? const <CipherOperation>[];
 
     if (!playerResponse.isVideoPlayable) {
-      throw VideoUnplayableException.unplayable(videoId,
-          reason: playerResponse.videoPlayabilityError ?? '');
+      throw VideoUnplayableException.unplayable(videoId, reason: playerResponse.videoPlayabilityError ?? '');
     }
 
     if (playerResponse.isLive) {
@@ -127,8 +124,7 @@ class StreamsClient {
 
     var dashManifestUrl = playerResponse.dashManifestUrl;
     if (!(dashManifestUrl?.isNullOrWhiteSpace ?? true)) {
-      var dashManifest =
-          await _getDashManifest(Uri.parse(dashManifestUrl!), cipherOperations);
+      var dashManifest = await _getDashManifest(Uri.parse(dashManifestUrl!), cipherOperations);
       streamInfoProviders.addAll(dashManifest.streams);
     }
     return StreamContext(streamInfoProviders, cipherOperations);
@@ -152,9 +148,7 @@ class StreamsClient {
       }
 
       // Content length
-      var contentLength = streamInfo.contentLength ??
-          await _httpClient.getContentLength(url, validate: false) ??
-          0;
+      var contentLength = streamInfo.contentLength ?? await _httpClient.getContentLength(url, validate: false) ?? 0;
 
       if (contentLength <= 0) {
         continue;
@@ -172,8 +166,7 @@ class StreamsClient {
       if (!videoCodec.isNullOrWhiteSpace) {
         var framerate = Framerate(streamInfo.framerate ?? 24);
         var videoQualityLabel = streamInfo.videoQualityLabel ??
-            VideoQualityUtil.getLabelFromTagWithFramerate(
-                tag, framerate.framesPerSecond.toDouble());
+            VideoQualityUtil.getLabelFromTagWithFramerate(tag, framerate.framesPerSecond.toDouble());
 
         var videoQuality = VideoQualityUtil.fromLabel(videoQualityLabel);
 
@@ -185,39 +178,19 @@ class StreamsClient {
 
         // Muxed
         if (!audioCodec.isNullOrWhiteSpace) {
-          streams[tag] = MuxedStreamInfo(
-              tag,
-              url,
-              container,
-              fileSize,
-              bitrate,
-              audioCodec!,
-              videoCodec!,
-              videoQualityLabel,
-              videoQuality,
-              videoResolution,
-              framerate);
+          streams[tag] = MuxedStreamInfo(tag, url, container, fileSize, bitrate, audioCodec!, videoCodec!,
+              videoQualityLabel, videoQuality, videoResolution, framerate);
           continue;
         }
 
         // Video only
-        streams[tag] = VideoOnlyStreamInfo(
-            tag,
-            url,
-            container,
-            fileSize,
-            bitrate,
-            videoCodec!,
-            videoQualityLabel,
-            videoQuality,
-            videoResolution,
-            framerate);
+        streams[tag] = VideoOnlyStreamInfo(tag, url, container, fileSize, bitrate, videoCodec!, videoQualityLabel,
+            videoQuality, videoResolution, framerate);
         continue;
       }
       // Audio-only
       if (!audioCodec.isNullOrWhiteSpace) {
-        streams[tag] = AudioOnlyStreamInfo(
-            tag, url, container, fileSize, bitrate, audioCodec!);
+        streams[tag] = AudioOnlyStreamInfo(tag, url, container, fileSize, bitrate, audioCodec!);
       }
 
       // #if DEBUG
@@ -243,6 +216,16 @@ class StreamsClient {
     return _getManifest(context);
   }
 
+  Future<StreamManifest> getManifestFromYoutubeApiResult(String apiResult) async {
+    try {
+      final context = await _getStreamContextFromYoutubeApiData(apiResult);
+      return _getManifest(context);
+    } on YoutubeExplodeException {
+      //TODO: ignore
+    }
+    return Future.value(null);
+  }
+
   /// Gets the HTTP Live Stream (HLS) manifest URL
   /// for the specified video (if it's a live video stream).
   Future<String> getHttpLiveStreamUrl(VideoId videoId) async {
@@ -251,13 +234,11 @@ class StreamsClient {
     final playerResponse = watchPage.playerResponse;
 
     if (playerResponse == null) {
-      throw TransientFailureException(
-          'Couldn\'t extract the playerResponse from the Watch Page!');
+      throw TransientFailureException('Couldn\'t extract the playerResponse from the Watch Page!');
     }
 
     if (!playerResponse.isVideoPlayable) {
-      throw VideoUnplayableException.unplayable(videoId,
-          reason: playerResponse.videoPlayabilityError ?? '');
+      throw VideoUnplayableException.unplayable(videoId, reason: playerResponse.videoPlayabilityError ?? '');
     }
 
     var hlsManifest = playerResponse.hlsManifestUrl;
@@ -268,6 +249,5 @@ class StreamsClient {
   }
 
   /// Gets the actual stream which is identified by the specified metadata.
-  Stream<List<int>> get(StreamInfo streamInfo) =>
-      _httpClient.getStream(streamInfo);
+  Stream<List<int>> get(StreamInfo streamInfo) => _httpClient.getStream(streamInfo);
 }
