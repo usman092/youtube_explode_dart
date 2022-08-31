@@ -50,7 +50,7 @@ void main() {
         .getUploads(ChannelId(
             'https://www.youtube.com/channel/UCEnBXANsKmyj2r9xVyKoDiQ'))
         .toList();
-    expect(videos.length, greaterThanOrEqualTo(79));
+    expect(videos.length, greaterThanOrEqualTo(75));
   });
 
   group('Get the videos of any youtube channel', () {
@@ -83,7 +83,7 @@ void main() {
             20000000000)); //Seems youtube likes to change and lower this number
     expect(aboutPage.description, isNotEmpty);
     expect(aboutPage.thumbnails, isNotEmpty); // Avatar list
-    expect(aboutPage.channelLinks, isNotEmpty);
+    expect(aboutPage.channelLinks, isNotNull);
     expect(aboutPage.country, 'United States');
     expect(aboutPage.joinDate, 'Apr 29, 2010');
   });

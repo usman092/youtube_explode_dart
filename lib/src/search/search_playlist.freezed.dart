@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'search_playlist.dart';
@@ -16,12 +18,13 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$SearchPlaylistTearOff {
   const _$SearchPlaylistTearOff();
 
-  _SearchChannel call(
-      PlaylistId playlistId, String playlistTitle, int playlistVideoCount) {
-    return _SearchChannel(
+  _SearchPlaylist call(PlaylistId playlistId, String playlistTitle,
+      int playlistVideoCount, List<Thumbnail> thumbnails) {
+    return _SearchPlaylist(
       playlistId,
       playlistTitle,
       playlistVideoCount,
+      thumbnails,
     );
   }
 }
@@ -40,6 +43,9 @@ mixin _$SearchPlaylist {
   /// Playlist video count, cannot be greater than 50.
   int get playlistVideoCount => throw _privateConstructorUsedError;
 
+  /// Video thumbnail
+  List<Thumbnail> get thumbnails => throw _privateConstructorUsedError;
+
   @JsonKey(ignore: true)
   $SearchPlaylistCopyWith<SearchPlaylist> get copyWith =>
       throw _privateConstructorUsedError;
@@ -51,7 +57,10 @@ abstract class $SearchPlaylistCopyWith<$Res> {
           SearchPlaylist value, $Res Function(SearchPlaylist) then) =
       _$SearchPlaylistCopyWithImpl<$Res>;
   $Res call(
-      {PlaylistId playlistId, String playlistTitle, int playlistVideoCount});
+      {PlaylistId playlistId,
+      String playlistTitle,
+      int playlistVideoCount,
+      List<Thumbnail> thumbnails});
 
   $PlaylistIdCopyWith<$Res> get playlistId;
 }
@@ -70,6 +79,7 @@ class _$SearchPlaylistCopyWithImpl<$Res>
     Object? playlistId = freezed,
     Object? playlistTitle = freezed,
     Object? playlistVideoCount = freezed,
+    Object? thumbnails = freezed,
   }) {
     return _then(_value.copyWith(
       playlistId: playlistId == freezed
@@ -84,6 +94,10 @@ class _$SearchPlaylistCopyWithImpl<$Res>
           ? _value.playlistVideoCount
           : playlistVideoCount // ignore: cast_nullable_to_non_nullable
               as int,
+      thumbnails: thumbnails == freezed
+          ? _value.thumbnails
+          : thumbnails // ignore: cast_nullable_to_non_nullable
+              as List<Thumbnail>,
     ));
   }
 
@@ -96,37 +110,41 @@ class _$SearchPlaylistCopyWithImpl<$Res>
 }
 
 /// @nodoc
-abstract class _$SearchChannelCopyWith<$Res>
+abstract class _$SearchPlaylistCopyWith<$Res>
     implements $SearchPlaylistCopyWith<$Res> {
-  factory _$SearchChannelCopyWith(
-          _SearchChannel value, $Res Function(_SearchChannel) then) =
-      __$SearchChannelCopyWithImpl<$Res>;
+  factory _$SearchPlaylistCopyWith(
+          _SearchPlaylist value, $Res Function(_SearchPlaylist) then) =
+      __$SearchPlaylistCopyWithImpl<$Res>;
   @override
   $Res call(
-      {PlaylistId playlistId, String playlistTitle, int playlistVideoCount});
+      {PlaylistId playlistId,
+      String playlistTitle,
+      int playlistVideoCount,
+      List<Thumbnail> thumbnails});
 
   @override
   $PlaylistIdCopyWith<$Res> get playlistId;
 }
 
 /// @nodoc
-class __$SearchChannelCopyWithImpl<$Res>
+class __$SearchPlaylistCopyWithImpl<$Res>
     extends _$SearchPlaylistCopyWithImpl<$Res>
-    implements _$SearchChannelCopyWith<$Res> {
-  __$SearchChannelCopyWithImpl(
-      _SearchChannel _value, $Res Function(_SearchChannel) _then)
-      : super(_value, (v) => _then(v as _SearchChannel));
+    implements _$SearchPlaylistCopyWith<$Res> {
+  __$SearchPlaylistCopyWithImpl(
+      _SearchPlaylist _value, $Res Function(_SearchPlaylist) _then)
+      : super(_value, (v) => _then(v as _SearchPlaylist));
 
   @override
-  _SearchChannel get _value => super._value as _SearchChannel;
+  _SearchPlaylist get _value => super._value as _SearchPlaylist;
 
   @override
   $Res call({
     Object? playlistId = freezed,
     Object? playlistTitle = freezed,
     Object? playlistVideoCount = freezed,
+    Object? thumbnails = freezed,
   }) {
-    return _then(_SearchChannel(
+    return _then(_SearchPlaylist(
       playlistId == freezed
           ? _value.playlistId
           : playlistId // ignore: cast_nullable_to_non_nullable
@@ -139,16 +157,19 @@ class __$SearchChannelCopyWithImpl<$Res>
           ? _value.playlistVideoCount
           : playlistVideoCount // ignore: cast_nullable_to_non_nullable
               as int,
+      thumbnails == freezed
+          ? _value.thumbnails
+          : thumbnails // ignore: cast_nullable_to_non_nullable
+              as List<Thumbnail>,
     ));
   }
 }
 
 /// @nodoc
 
-@With(BaseSearchContent)
-class _$_SearchChannel with BaseSearchContent implements _SearchChannel {
-  const _$_SearchChannel(
-      this.playlistId, this.playlistTitle, this.playlistVideoCount);
+class _$_SearchPlaylist implements _SearchPlaylist {
+  const _$_SearchPlaylist(this.playlistId, this.playlistTitle,
+      this.playlistVideoCount, this.thumbnails);
 
   @override
 
@@ -162,59 +183,67 @@ class _$_SearchChannel with BaseSearchContent implements _SearchChannel {
 
   /// Playlist video count, cannot be greater than 50.
   final int playlistVideoCount;
+  @override
+
+  /// Video thumbnail
+  final List<Thumbnail> thumbnails;
 
   @override
   String toString() {
-    return 'SearchPlaylist(playlistId: $playlistId, playlistTitle: $playlistTitle, playlistVideoCount: $playlistVideoCount)';
+    return 'SearchPlaylist(playlistId: $playlistId, playlistTitle: $playlistTitle, playlistVideoCount: $playlistVideoCount, thumbnails: $thumbnails)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _SearchChannel &&
-            (identical(other.playlistId, playlistId) ||
-                const DeepCollectionEquality()
-                    .equals(other.playlistId, playlistId)) &&
-            (identical(other.playlistTitle, playlistTitle) ||
-                const DeepCollectionEquality()
-                    .equals(other.playlistTitle, playlistTitle)) &&
-            (identical(other.playlistVideoCount, playlistVideoCount) ||
-                const DeepCollectionEquality()
-                    .equals(other.playlistVideoCount, playlistVideoCount)));
+        (other.runtimeType == runtimeType &&
+            other is _SearchPlaylist &&
+            const DeepCollectionEquality()
+                .equals(other.playlistId, playlistId) &&
+            const DeepCollectionEquality()
+                .equals(other.playlistTitle, playlistTitle) &&
+            const DeepCollectionEquality()
+                .equals(other.playlistVideoCount, playlistVideoCount) &&
+            const DeepCollectionEquality()
+                .equals(other.thumbnails, thumbnails));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(playlistId) ^
-      const DeepCollectionEquality().hash(playlistTitle) ^
-      const DeepCollectionEquality().hash(playlistVideoCount);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(playlistId),
+      const DeepCollectionEquality().hash(playlistTitle),
+      const DeepCollectionEquality().hash(playlistVideoCount),
+      const DeepCollectionEquality().hash(thumbnails));
 
   @JsonKey(ignore: true)
   @override
-  _$SearchChannelCopyWith<_SearchChannel> get copyWith =>
-      __$SearchChannelCopyWithImpl<_SearchChannel>(this, _$identity);
+  _$SearchPlaylistCopyWith<_SearchPlaylist> get copyWith =>
+      __$SearchPlaylistCopyWithImpl<_SearchPlaylist>(this, _$identity);
 }
 
-abstract class _SearchChannel implements SearchPlaylist, BaseSearchContent {
-  const factory _SearchChannel(
-          PlaylistId playlistId, String playlistTitle, int playlistVideoCount) =
-      _$_SearchChannel;
+abstract class _SearchPlaylist implements SearchPlaylist {
+  const factory _SearchPlaylist(PlaylistId playlistId, String playlistTitle,
+      int playlistVideoCount, List<Thumbnail> thumbnails) = _$_SearchPlaylist;
 
   @override
 
   /// PlaylistId.
-  PlaylistId get playlistId => throw _privateConstructorUsedError;
+  PlaylistId get playlistId;
   @override
 
   /// Playlist title.
-  String get playlistTitle => throw _privateConstructorUsedError;
+  String get playlistTitle;
   @override
 
   /// Playlist video count, cannot be greater than 50.
-  int get playlistVideoCount => throw _privateConstructorUsedError;
+  int get playlistVideoCount;
+  @override
+
+  /// Video thumbnail
+  List<Thumbnail> get thumbnails;
   @override
   @JsonKey(ignore: true)
-  _$SearchChannelCopyWith<_SearchChannel> get copyWith =>
+  _$SearchPlaylistCopyWith<_SearchPlaylist> get copyWith =>
       throw _privateConstructorUsedError;
 }

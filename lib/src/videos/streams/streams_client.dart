@@ -9,13 +9,6 @@ import '../../reverse_engineering/pages/watch_page.dart';
 import '../../reverse_engineering/player/player_source.dart';
 import '../../reverse_engineering/youtube_http_client.dart';
 import '../video_id.dart';
-import 'bitrate.dart';
-import 'filesize.dart';
-import 'framerate.dart';
-import 'stream_container.dart';
-import 'stream_context.dart';
-import 'stream_info.dart';
-import 'stream_manifest.dart';
 import 'streams.dart';
 
 /// Queries related to media streams of YouTube videos.
@@ -34,52 +27,8 @@ class StreamsClient {
     return DashManifest.get(_httpClient, dashManifestUrl);
   }
 
-  // Not used anymore since Youtube removed the `video_info` endpoint.
-/*  Future<StreamContext> _getStreamContextFromVideoInfo(VideoId videoId) async {
-    var embedPage = await EmbedPage.get(_httpClient, videoId.toString());
-    var playerConfig = embedPage.playerConfig;
-    if (playerConfig == null) {
-      throw VideoUnplayableException.unplayable(videoId);
-    }
-
-    var playerSource = await PlayerSource.get(
-        _httpClient, embedPage.sourceUrl ?? playerConfig.sourceUrl);
-    var cipherOperations = playerSource.getCipherOperations();
-
-    var videoInfoResponse = await VideoInfoClient.get(
-        _httpClient, videoId.toString(), playerSource.sts);
-    var playerResponse = videoInfoResponse.playerResponse;
-
-    var previewVideoId = playerResponse.previewVideoId;
-    if (!previewVideoId.isNullOrWhiteSpace) {
-      throw VideoRequiresPurchaseException.preview(
-          videoId, VideoId(previewVideoId!));
-    }
-
-    if (!playerResponse.isVideoPlayable) {
-      throw VideoUnplayableException.unplayable(videoId,
-          reason: playerResponse.videoPlayabilityError ?? '');
-    }
-
-    if (playerResponse.isLive) {
-      throw VideoUnplayableException.liveStream(videoId);
-    }
-
-    var streamInfoProviders = <StreamInfoProvider>[
-      ...videoInfoResponse.streams,
-      ...playerResponse.streams
-    ];
-
-    var dashManifestUrl = playerResponse.dashManifestUrl;
-    if (!dashManifestUrl.isNullOrWhiteSpace) {
-      var dashManifest =
-          await _getDashManifest(Uri.parse(dashManifestUrl!), cipherOperations);
-      streamInfoProviders.addAll(dashManifest.streams);
-    }
-    return StreamContext(streamInfoProviders, cipherOperations);
-  }*/
-
-  Future<StreamContext> _getStreamContextFromEmbeddedClient(VideoId videoId) async {
+  Future<StreamContext> _getStreamContextFromEmbeddedClient(
+      VideoId videoId) async {
     final page = await EmbeddedPlayerClient.get(_httpClient, videoId.value);
 
     return StreamContext(page.streams.toList(), const []);
@@ -148,19 +97,20 @@ class StreamsClient {
         url = url.setQueryParam(signatureParameter, signature);
       }
 
-      // Content length
-      var contentLength = streamInfo.contentLength ??
-          await _httpClient.getContentLengthCustom(url, validate: false, customApi: customApi) ??
-          0;
+      // Content length - Dont try to get content length of a dash stream.
+      var contentLength = streamInfo.source == StreamSource.dash
+          ? 0
+          : streamInfo.contentLength ??
+              await _httpClient.getContentLength(url, validate: false) ??
+              0;
 
-      if (contentLength <= 0) {
+      if (contentLength == 0 && streamInfo.source != StreamSource.dash) {
         continue;
       }
-
       // Common
       var container = StreamContainer.parse(streamInfo.container!);
       var fileSize = FileSize(contentLength);
-      var bitrate = Bitrate(streamInfo.bitrate!);
+      var bitrate = Bitrate(streamInfo.bitrate ?? 0);
 
       var audioCodec = streamInfo.audioCodec;
       var videoCodec = streamInfo.videoCodec;
@@ -168,10 +118,7 @@ class StreamsClient {
       // Muxed or Video-only
       if (!videoCodec.isNullOrWhiteSpace) {
         var framerate = Framerate(streamInfo.framerate ?? 24);
-        var videoQualityLabel = streamInfo.videoQualityLabel ??
-            VideoQualityUtil.getLabelFromTagWithFramerate(tag, framerate.framesPerSecond.toDouble());
-
-        var videoQuality = VideoQualityUtil.fromLabel(videoQualityLabel);
+        var videoQuality = VideoQualityUtil.fromLabel(streamInfo.qualityLabel);
 
         var videoWidth = streamInfo.videoWidth;
         var videoHeight = streamInfo.videoHeight;
@@ -180,20 +127,53 @@ class StreamsClient {
             : videoQuality.toVideoResolution();
 
         // Muxed
-        if (!audioCodec.isNullOrWhiteSpace) {
-          streams[tag] = MuxedStreamInfo(tag, url, container, fileSize, bitrate, audioCodec!, videoCodec!,
-              videoQualityLabel, videoQuality, videoResolution, framerate);
+        if (!audioCodec.isNullOrWhiteSpace &&
+            streamInfo.source != StreamSource.adaptive) {
+          streams[tag] = MuxedStreamInfo(
+            tag,
+            url,
+            container,
+            fileSize,
+            bitrate,
+            audioCodec!,
+            videoCodec!,
+            streamInfo.qualityLabel,
+            videoQuality,
+            videoResolution,
+            framerate,
+            streamInfo.codec,
+          );
           continue;
         }
 
         // Video only
-        streams[tag] = VideoOnlyStreamInfo(tag, url, container, fileSize, bitrate, videoCodec!, videoQualityLabel,
-            videoQuality, videoResolution, framerate);
+        streams[tag] = VideoOnlyStreamInfo(
+            tag,
+            url,
+            container,
+            fileSize,
+            bitrate,
+            videoCodec!,
+            streamInfo.qualityLabel,
+            videoQuality,
+            videoResolution,
+            framerate,
+            streamInfo.fragments ?? const [],
+            streamInfo.codec);
         continue;
       }
       // Audio-only
       if (!audioCodec.isNullOrWhiteSpace) {
-        streams[tag] = AudioOnlyStreamInfo(tag, url, container, fileSize, bitrate, audioCodec!);
+        streams[tag] = AudioOnlyStreamInfo(
+            tag,
+            url,
+            container,
+            fileSize,
+            bitrate,
+            audioCodec!,
+            streamInfo.qualityLabel,
+            streamInfo.fragments ?? const [],
+            streamInfo.codec);
       }
 
       // #if DEBUG
@@ -214,8 +194,8 @@ class StreamsClient {
     } on YoutubeExplodeException {
       //TODO: ignore
     }
-
     final context = await _getStreamContextFromWatchPage(videoId);
+
     return _getManifest(context);
   }
 

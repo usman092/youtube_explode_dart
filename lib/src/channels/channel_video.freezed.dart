@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'channel_video.dart';
@@ -234,36 +236,30 @@ class _$_ChannelVideo implements _ChannelVideo {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _ChannelVideo &&
-            (identical(other.videoId, videoId) ||
-                const DeepCollectionEquality()
-                    .equals(other.videoId, videoId)) &&
-            (identical(other.videoTitle, videoTitle) ||
-                const DeepCollectionEquality()
-                    .equals(other.videoTitle, videoTitle)) &&
-            (identical(other.videoDuration, videoDuration) ||
-                const DeepCollectionEquality()
-                    .equals(other.videoDuration, videoDuration)) &&
-            (identical(other.videoThumbnail, videoThumbnail) ||
-                const DeepCollectionEquality()
-                    .equals(other.videoThumbnail, videoThumbnail)) &&
-            (identical(other.videoUploadDate, videoUploadDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.videoUploadDate, videoUploadDate)) &&
-            (identical(other.videoViews, videoViews) ||
-                const DeepCollectionEquality()
-                    .equals(other.videoViews, videoViews)));
+        (other.runtimeType == runtimeType &&
+            other is _ChannelVideo &&
+            const DeepCollectionEquality().equals(other.videoId, videoId) &&
+            const DeepCollectionEquality()
+                .equals(other.videoTitle, videoTitle) &&
+            const DeepCollectionEquality()
+                .equals(other.videoDuration, videoDuration) &&
+            const DeepCollectionEquality()
+                .equals(other.videoThumbnail, videoThumbnail) &&
+            const DeepCollectionEquality()
+                .equals(other.videoUploadDate, videoUploadDate) &&
+            const DeepCollectionEquality()
+                .equals(other.videoViews, videoViews));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(videoId) ^
-      const DeepCollectionEquality().hash(videoTitle) ^
-      const DeepCollectionEquality().hash(videoDuration) ^
-      const DeepCollectionEquality().hash(videoThumbnail) ^
-      const DeepCollectionEquality().hash(videoUploadDate) ^
-      const DeepCollectionEquality().hash(videoViews);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(videoId),
+      const DeepCollectionEquality().hash(videoTitle),
+      const DeepCollectionEquality().hash(videoDuration),
+      const DeepCollectionEquality().hash(videoThumbnail),
+      const DeepCollectionEquality().hash(videoUploadDate),
+      const DeepCollectionEquality().hash(videoViews));
 
   @JsonKey(ignore: true)
   @override
@@ -283,28 +279,28 @@ abstract class _ChannelVideo implements ChannelVideo {
   @override
 
   /// Video ID.
-  VideoId get videoId => throw _privateConstructorUsedError;
+  VideoId get videoId;
   @override
 
   /// Video title.
-  String get videoTitle => throw _privateConstructorUsedError;
+  String get videoTitle;
   @override
 
   /// Video duration
-  Duration get videoDuration => throw _privateConstructorUsedError;
+  Duration get videoDuration;
   @override
 
   /// Video thumbnail
-  String get videoThumbnail => throw _privateConstructorUsedError;
+  String get videoThumbnail;
   @override
 
   /// Video upload date.
   /// Formatted like 10 hours ago
-  String get videoUploadDate => throw _privateConstructorUsedError;
+  String get videoUploadDate;
   @override
 
   /// Video view count.
-  int get videoViews => throw _privateConstructorUsedError;
+  int get videoViews;
   @override
   @JsonKey(ignore: true)
   _$ChannelVideoCopyWith<_ChannelVideo> get copyWith =>

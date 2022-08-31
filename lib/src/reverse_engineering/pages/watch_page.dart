@@ -5,11 +5,9 @@ import 'package:html/parser.dart' as parser;
 import '../../../youtube_explode_dart.dart';
 import '../../extensions/helpers_extension.dart';
 import '../../retry.dart';
-import '../../videos/video_id.dart';
 import '../models/initial_data.dart';
 import '../models/youtube_page.dart';
 import '../player/player_response.dart';
-import '../youtube_http_client.dart';
 import 'player_config_base.dart';
 
 ///
@@ -54,30 +52,34 @@ class WatchPage extends YoutubePage<_InitialData> {
       root.querySelector('meta[property="og:url"]') != null;
 
   ///
-  int get videoLikeCount => int.parse(_videoLikeExp
-          .firstMatch(root.outerHtml)
-          ?.group(1)
-          ?.stripNonDigits()
-          .nullIfWhitespace ??
-      root
-          .querySelector('.like-button-renderer-like-button')
-          ?.text
-          .stripNonDigits()
-          .nullIfWhitespace ??
-      '0');
+  int get videoLikeCount =>
+      initialData.likesCount ??
+      int.parse(_videoLikeExp
+              .firstMatch(root.outerHtml)
+              ?.group(1)
+              ?.stripNonDigits()
+              .nullIfWhitespace ??
+          root
+              .querySelector('.like-button-renderer-like-button')
+              ?.text
+              .stripNonDigits()
+              .nullIfWhitespace ??
+          '0');
 
   ///
-  int get videoDislikeCount => int.parse(_videoDislikeExp
-          .firstMatch(root.outerHtml)
-          ?.group(1)
-          ?.stripNonDigits()
-          .nullIfWhitespace ??
-      root
-          .querySelector('.like-button-renderer-dislike-button')
-          ?.text
-          .stripNonDigits()
-          .nullIfWhitespace ??
-      '0');
+  int get videoDislikeCount =>
+      initialData.disLikesCount ??
+      int.parse(_videoDislikeExp
+              .firstMatch(root.outerHtml)
+              ?.group(1)
+              ?.stripNonDigits()
+              .nullIfWhitespace ??
+          root
+              .querySelector('.like-button-renderer-dislike-button')
+              ?.text
+              .stripNonDigits()
+              .nullIfWhitespace ??
+          '0');
 
   String? get commentsContinuation => initialData.commentsContinuation;
 
@@ -119,7 +121,7 @@ class WatchPage extends YoutubePage<_InitialData> {
   ///
   static Future<WatchPage> get(YoutubeHttpClient httpClient, String videoId) {
     final url = 'https://youtube.com/watch?v=$videoId&bpctr=9999999999&hl=en';
-    return retry(() async {
+    return retry(httpClient, () async {
       var req = await httpClient.get(url, validate: true);
 
       var cookies = req.headers['set-cookie']!;
@@ -159,6 +161,60 @@ class WatchPlayerConfig implements PlayerConfigBase {
 class _InitialData extends InitialData {
   _InitialData(JsonMap root) : super(root);
 
+  late final int? likesCount = _getLikes();
+  late final int? disLikesCount = _getDislikes();
+
+  int? _getLikes() {
+    if (root['contents'] != null) {
+      final likes = root
+          .get('contents')
+          ?.get('twoColumnWatchNextResults')
+          ?.get('results')
+          ?.get('results')
+          ?.getList('contents')
+          ?.firstWhereOrNull((e) => e['videoPrimaryInfoRenderer'] != null)
+          ?.get('videoPrimaryInfoRenderer')
+          ?.get('videoActions')
+          ?.get('menuRenderer')
+          ?.getList('topLevelButtons')
+          ?.firstWhereOrNull((e) => e['toggleButtonRenderer'] != null)
+          ?.get('toggleButtonRenderer')
+          ?.get('defaultText')
+          ?.get('accessibility')
+          ?.get('accessibilityData')
+          ?.getT<String>('label');
+
+      return likes.parseInt();
+    }
+    return null;
+  }
+
+  int? _getDislikes() {
+    if (root['contents'] != null) {
+      final likes = root
+          .get('contents')
+          ?.get('twoColumnWatchNextResults')
+          ?.get('results')
+          ?.get('results')
+          ?.getList('contents')
+          ?.firstWhereOrNull((e) => e['videoPrimaryInfoRenderer'] != null)
+          ?.get('videoPrimaryInfoRenderer')
+          ?.get('videoActions')
+          ?.get('menuRenderer')
+          ?.getList('topLevelButtons')
+          ?.where((e) => e['toggleButtonRenderer'] != null)
+          .elementAtSafe(1)
+          ?.get('toggleButtonRenderer')
+          ?.get('defaultText')
+          ?.get('accessibility')
+          ?.get('accessibilityData')
+          ?.getT<String>('label');
+
+      return likes.parseInt();
+    }
+    return null;
+  }
+
   JsonMap? getContinuationContext() {
     if (root['contents'] != null) {
       return root
@@ -167,8 +223,8 @@ class _InitialData extends InitialData {
           ?.get('results')
           ?.get('results')
           ?.getList('contents')
-          ?.firstWhere((e) => e['itemSectionRenderer'] != null)
-          .get('itemSectionRenderer')
+          ?.firstWhereOrNull((e) => e['itemSectionRenderer'] != null)
+          ?.get('itemSectionRenderer')
           ?.getList('contents')
           ?.firstOrNull
           ?.get('continuationItemRenderer')

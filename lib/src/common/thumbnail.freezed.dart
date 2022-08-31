@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'thumbnail.dart';
@@ -149,21 +151,19 @@ class _$_Thumbnail implements _Thumbnail {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Thumbnail &&
-            (identical(other.url, url) ||
-                const DeepCollectionEquality().equals(other.url, url)) &&
-            (identical(other.height, height) ||
-                const DeepCollectionEquality().equals(other.height, height)) &&
-            (identical(other.width, width) ||
-                const DeepCollectionEquality().equals(other.width, width)));
+        (other.runtimeType == runtimeType &&
+            other is _Thumbnail &&
+            const DeepCollectionEquality().equals(other.url, url) &&
+            const DeepCollectionEquality().equals(other.height, height) &&
+            const DeepCollectionEquality().equals(other.width, width));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(url) ^
-      const DeepCollectionEquality().hash(height) ^
-      const DeepCollectionEquality().hash(width);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(url),
+      const DeepCollectionEquality().hash(height),
+      const DeepCollectionEquality().hash(width));
 
   @JsonKey(ignore: true)
   @override
@@ -177,15 +177,15 @@ abstract class _Thumbnail implements Thumbnail {
   @override
 
   /// Image url.
-  Uri get url => throw _privateConstructorUsedError;
+  Uri get url;
   @override
 
   /// Image height.
-  int get height => throw _privateConstructorUsedError;
+  int get height;
   @override
 
   /// Image width.
-  int get width => throw _privateConstructorUsedError;
+  int get width;
   @override
   @JsonKey(ignore: true)
   _$ThumbnailCopyWith<_Thumbnail> get copyWith =>

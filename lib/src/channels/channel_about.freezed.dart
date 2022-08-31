@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'channel_about.dart';
@@ -17,12 +19,12 @@ class _$ChannelAboutTearOff {
   const _$ChannelAboutTearOff();
 
   _ChannelAbout call(
-      String description,
-      int viewCount,
-      String joinDate,
+      String? description,
+      int? viewCount,
+      String? joinDate,
       String title,
       List<Thumbnail> thumbnails,
-      String country,
+      String? country,
       List<ChannelLink> channelLinks) {
     return _ChannelAbout(
       description,
@@ -42,14 +44,14 @@ const $ChannelAbout = _$ChannelAboutTearOff();
 /// @nodoc
 mixin _$ChannelAbout {
   /// Full channel description.
-  String get description => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
 
   /// Channel view count.
-  int get viewCount => throw _privateConstructorUsedError;
+  int? get viewCount => throw _privateConstructorUsedError;
 
   /// Channel join date.
   /// Formatted as: Gen 01, 2000
-  String get joinDate => throw _privateConstructorUsedError;
+  String? get joinDate => throw _privateConstructorUsedError;
 
   /// Channel title.
   String get title => throw _privateConstructorUsedError;
@@ -58,7 +60,7 @@ mixin _$ChannelAbout {
   List<Thumbnail> get thumbnails => throw _privateConstructorUsedError;
 
   /// Channel country.
-  String get country => throw _privateConstructorUsedError;
+  String? get country => throw _privateConstructorUsedError;
 
   /// Channel links.
   List<ChannelLink> get channelLinks => throw _privateConstructorUsedError;
@@ -74,12 +76,12 @@ abstract class $ChannelAboutCopyWith<$Res> {
           ChannelAbout value, $Res Function(ChannelAbout) then) =
       _$ChannelAboutCopyWithImpl<$Res>;
   $Res call(
-      {String description,
-      int viewCount,
-      String joinDate,
+      {String? description,
+      int? viewCount,
+      String? joinDate,
       String title,
       List<Thumbnail> thumbnails,
-      String country,
+      String? country,
       List<ChannelLink> channelLinks});
 }
 
@@ -105,15 +107,15 @@ class _$ChannelAboutCopyWithImpl<$Res> implements $ChannelAboutCopyWith<$Res> {
       description: description == freezed
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       viewCount: viewCount == freezed
           ? _value.viewCount
           : viewCount // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       joinDate: joinDate == freezed
           ? _value.joinDate
           : joinDate // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -125,7 +127,7 @@ class _$ChannelAboutCopyWithImpl<$Res> implements $ChannelAboutCopyWith<$Res> {
       country: country == freezed
           ? _value.country
           : country // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       channelLinks: channelLinks == freezed
           ? _value.channelLinks
           : channelLinks // ignore: cast_nullable_to_non_nullable
@@ -142,12 +144,12 @@ abstract class _$ChannelAboutCopyWith<$Res>
       __$ChannelAboutCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String description,
-      int viewCount,
-      String joinDate,
+      {String? description,
+      int? viewCount,
+      String? joinDate,
       String title,
       List<Thumbnail> thumbnails,
-      String country,
+      String? country,
       List<ChannelLink> channelLinks});
 }
 
@@ -175,15 +177,15 @@ class __$ChannelAboutCopyWithImpl<$Res> extends _$ChannelAboutCopyWithImpl<$Res>
       description == freezed
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       viewCount == freezed
           ? _value.viewCount
           : viewCount // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       joinDate == freezed
           ? _value.joinDate
           : joinDate // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -195,7 +197,7 @@ class __$ChannelAboutCopyWithImpl<$Res> extends _$ChannelAboutCopyWithImpl<$Res>
       country == freezed
           ? _value.country
           : country // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       channelLinks == freezed
           ? _value.channelLinks
           : channelLinks // ignore: cast_nullable_to_non_nullable
@@ -213,16 +215,16 @@ class _$_ChannelAbout implements _ChannelAbout {
   @override
 
   /// Full channel description.
-  final String description;
+  final String? description;
   @override
 
   /// Channel view count.
-  final int viewCount;
+  final int? viewCount;
   @override
 
   /// Channel join date.
   /// Formatted as: Gen 01, 2000
-  final String joinDate;
+  final String? joinDate;
   @override
 
   /// Channel title.
@@ -234,7 +236,7 @@ class _$_ChannelAbout implements _ChannelAbout {
   @override
 
   /// Channel country.
-  final String country;
+  final String? country;
   @override
 
   /// Channel links.
@@ -248,39 +250,30 @@ class _$_ChannelAbout implements _ChannelAbout {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _ChannelAbout &&
-            (identical(other.description, description) ||
-                const DeepCollectionEquality()
-                    .equals(other.description, description)) &&
-            (identical(other.viewCount, viewCount) ||
-                const DeepCollectionEquality()
-                    .equals(other.viewCount, viewCount)) &&
-            (identical(other.joinDate, joinDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.joinDate, joinDate)) &&
-            (identical(other.title, title) ||
-                const DeepCollectionEquality().equals(other.title, title)) &&
-            (identical(other.thumbnails, thumbnails) ||
-                const DeepCollectionEquality()
-                    .equals(other.thumbnails, thumbnails)) &&
-            (identical(other.country, country) ||
-                const DeepCollectionEquality()
-                    .equals(other.country, country)) &&
-            (identical(other.channelLinks, channelLinks) ||
-                const DeepCollectionEquality()
-                    .equals(other.channelLinks, channelLinks)));
+        (other.runtimeType == runtimeType &&
+            other is _ChannelAbout &&
+            const DeepCollectionEquality()
+                .equals(other.description, description) &&
+            const DeepCollectionEquality().equals(other.viewCount, viewCount) &&
+            const DeepCollectionEquality().equals(other.joinDate, joinDate) &&
+            const DeepCollectionEquality().equals(other.title, title) &&
+            const DeepCollectionEquality()
+                .equals(other.thumbnails, thumbnails) &&
+            const DeepCollectionEquality().equals(other.country, country) &&
+            const DeepCollectionEquality()
+                .equals(other.channelLinks, channelLinks));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(description) ^
-      const DeepCollectionEquality().hash(viewCount) ^
-      const DeepCollectionEquality().hash(joinDate) ^
-      const DeepCollectionEquality().hash(title) ^
-      const DeepCollectionEquality().hash(thumbnails) ^
-      const DeepCollectionEquality().hash(country) ^
-      const DeepCollectionEquality().hash(channelLinks);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(description),
+      const DeepCollectionEquality().hash(viewCount),
+      const DeepCollectionEquality().hash(joinDate),
+      const DeepCollectionEquality().hash(title),
+      const DeepCollectionEquality().hash(thumbnails),
+      const DeepCollectionEquality().hash(country),
+      const DeepCollectionEquality().hash(channelLinks));
 
   @JsonKey(ignore: true)
   @override
@@ -290,43 +283,43 @@ class _$_ChannelAbout implements _ChannelAbout {
 
 abstract class _ChannelAbout implements ChannelAbout {
   const factory _ChannelAbout(
-      String description,
-      int viewCount,
-      String joinDate,
+      String? description,
+      int? viewCount,
+      String? joinDate,
       String title,
       List<Thumbnail> thumbnails,
-      String country,
+      String? country,
       List<ChannelLink> channelLinks) = _$_ChannelAbout;
 
   @override
 
   /// Full channel description.
-  String get description => throw _privateConstructorUsedError;
+  String? get description;
   @override
 
   /// Channel view count.
-  int get viewCount => throw _privateConstructorUsedError;
+  int? get viewCount;
   @override
 
   /// Channel join date.
   /// Formatted as: Gen 01, 2000
-  String get joinDate => throw _privateConstructorUsedError;
+  String? get joinDate;
   @override
 
   /// Channel title.
-  String get title => throw _privateConstructorUsedError;
+  String get title;
   @override
 
   /// Channel thumbnails.
-  List<Thumbnail> get thumbnails => throw _privateConstructorUsedError;
+  List<Thumbnail> get thumbnails;
   @override
 
   /// Channel country.
-  String get country => throw _privateConstructorUsedError;
+  String? get country;
   @override
 
   /// Channel links.
-  List<ChannelLink> get channelLinks => throw _privateConstructorUsedError;
+  List<ChannelLink> get channelLinks;
   @override
   @JsonKey(ignore: true)
   _$ChannelAboutCopyWith<_ChannelAbout> get copyWith =>

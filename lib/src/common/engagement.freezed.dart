@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'engagement.dart';
@@ -152,24 +154,20 @@ class _$_Engagement extends _Engagement {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Engagement &&
-            (identical(other.viewCount, viewCount) ||
-                const DeepCollectionEquality()
-                    .equals(other.viewCount, viewCount)) &&
-            (identical(other.likeCount, likeCount) ||
-                const DeepCollectionEquality()
-                    .equals(other.likeCount, likeCount)) &&
-            (identical(other.dislikeCount, dislikeCount) ||
-                const DeepCollectionEquality()
-                    .equals(other.dislikeCount, dislikeCount)));
+        (other.runtimeType == runtimeType &&
+            other is _Engagement &&
+            const DeepCollectionEquality().equals(other.viewCount, viewCount) &&
+            const DeepCollectionEquality().equals(other.likeCount, likeCount) &&
+            const DeepCollectionEquality()
+                .equals(other.dislikeCount, dislikeCount));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(viewCount) ^
-      const DeepCollectionEquality().hash(likeCount) ^
-      const DeepCollectionEquality().hash(dislikeCount);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(viewCount),
+      const DeepCollectionEquality().hash(likeCount),
+      const DeepCollectionEquality().hash(dislikeCount));
 
   @JsonKey(ignore: true)
   @override
@@ -185,15 +183,15 @@ abstract class _Engagement extends Engagement {
   @override
 
   /// View count.
-  int get viewCount => throw _privateConstructorUsedError;
+  int get viewCount;
   @override
 
   /// Like count.
-  int? get likeCount => throw _privateConstructorUsedError;
+  int? get likeCount;
   @override
 
   /// Dislike count.
-  int? get dislikeCount => throw _privateConstructorUsedError;
+  int? get dislikeCount;
   @override
   @JsonKey(ignore: true)
   _$EngagementCopyWith<_Engagement> get copyWith =>

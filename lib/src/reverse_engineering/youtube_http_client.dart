@@ -2,17 +2,22 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:youtube_explode_dart/src/retry.dart';
 
 import '../exceptions/exceptions.dart';
 import '../extensions/helpers_extension.dart';
+import '../retry.dart';
 import '../videos/streams/streams.dart';
 
 /// HttpClient wrapper for YouTube
 class YoutubeHttpClient extends http.BaseClient {
   final http.Client _httpClient;
 
-  final Map<String, String> _defaultHeaders = const {
+  // Flag to interrupt receiving stream.
+  bool _closed = false;
+
+  bool get closed => _closed;
+
+  static const Map<String, String> _defaultHeaders = {
     'user-agent':
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
     'cookie': 'CONSENT=YES+cb',
@@ -32,8 +37,12 @@ class YoutubeHttpClient extends http.BaseClient {
 
   /// Throws if something is wrong with the response.
   void _validateResponse(http.BaseResponse response, int statusCode) {
+    if (_closed) return;
+
     var request = response.request!;
-    if (request.url.host.endsWith('.google.com') && request.url.path.startsWith('/sorry/')) {
+
+    if (request.url.host.endsWith('.google.com') &&
+        request.url.path.startsWith('/sorry/')) {
       throw RequestLimitExceededException.httpRequest(response);
     }
 
@@ -53,6 +62,7 @@ class YoutubeHttpClient extends http.BaseClient {
   ///
   Future<String> getString(dynamic url, {Map<String, String> headers = const {}, bool validate = true}) async {
     var response = await get(url, headers: headers);
+    if (_closed) throw HttpClientClosedException();
 
     if (validate) {
       _validateResponse(response, response.statusCode);
@@ -68,6 +78,8 @@ class YoutubeHttpClient extends http.BaseClient {
       url = Uri.parse(url);
     }
     var response = await super.get(url, headers: headers);
+    if (_closed) throw HttpClientClosedException();
+
     if (validate) {
       _validateResponse(response, response.statusCode);
     }
@@ -76,8 +88,14 @@ class YoutubeHttpClient extends http.BaseClient {
 
   @override
   Future<http.Response> post(Uri url,
-      {Map<String, String>? headers, Object? body, Encoding? encoding, bool validate = false}) async {
-    final response = await super.post(url, headers: headers, body: body, encoding: encoding);
+      {Map<String, String>? headers,
+      Object? body,
+      Encoding? encoding,
+      bool validate = false}) async {
+    final response =
+        await super.post(url, headers: headers, body: body, encoding: encoding);
+    if (_closed) throw HttpClientClosedException();
+
     if (validate) {
       _validateResponse(response, response.statusCode);
     }
@@ -92,6 +110,7 @@ class YoutubeHttpClient extends http.BaseClient {
       url = Uri.parse(url);
     }
     var response = await post(url, headers: headers, body: body);
+    if (_closed) throw HttpClientClosedException();
 
     if (validate) {
       _validateResponse(response, response.statusCode);
@@ -101,14 +120,54 @@ class YoutubeHttpClient extends http.BaseClient {
   }
 
   Stream<List<int>> getStream(StreamInfo streamInfo,
-      {Map<String, String> headers = const {}, bool validate = true, int start = 0, int errorCount = 0}) async* {
-    var url = streamInfo.url;
+      {Map<String, String> headers = const {},
+      bool validate = true,
+      int start = 0,
+      int errorCount = 0}) {
+    if (streamInfo.fragments.isNotEmpty) {
+      // DASH(fragmented) stream
+      return _getFragmentedStream(streamInfo,
+          headers: headers,
+          validate: validate,
+          start: start,
+          errorCount: errorCount);
+    }
+    // Normal stream
+    return _getStream(streamInfo,
+        headers: headers,
+        validate: validate,
+        start: start,
+        errorCount: errorCount);
+  }
+
+  Stream<List<int>> _getFragmentedStream(StreamInfo streamInfo,
+      {Map<String, String> headers = const {},
+      bool validate = true,
+      int start = 0,
+      int errorCount = 0}) async* {
+    // This is the base url.
+    final url = streamInfo.url;
+    for (final fragment in streamInfo.fragments) {
+      final req = await retry(
+          this, () => get(Uri.parse(url.toString() + fragment.path)));
+      yield req.bodyBytes;
+    }
+  }
+
+  Stream<List<int>> _getStream(StreamInfo streamInfo,
+      {Map<String, String> headers = const {},
+      bool validate = true,
+      int start = 0,
+      int errorCount = 0}) async* {
+    final url = streamInfo.url;
     var bytesCount = start;
-    for (var i = start; i < streamInfo.size.totalBytes; i += 9898989) {
+
+    while (!_closed && bytesCount != streamInfo.size.totalBytes) {
       try {
-        final response = await retry(() {
+        final response = await retry(this, () {
           final request = http.Request('get', url);
-          request.headers['range'] = 'bytes=$i-${i + 9898989 - 1}';
+          request.headers['range'] =
+              'bytes=$bytesCount-${bytesCount + 9898989 - 1}';
           return send(request);
         });
         if (validate) {
@@ -121,13 +180,18 @@ class YoutubeHttpClient extends http.BaseClient {
         }, onError: (_) => null, onDone: stream.close, cancelOnError: false);
         errorCount = 0;
         yield* stream.stream;
+      } on HttpClientClosedException {
+        break;
       } on Exception {
         if (errorCount == 5) {
           rethrow;
         }
         await Future.delayed(const Duration(milliseconds: 500));
-        yield* getStream(streamInfo,
-            headers: headers, validate: validate, start: bytesCount, errorCount: errorCount + 1);
+        yield* _getStream(streamInfo,
+            headers: headers,
+            validate: validate,
+            start: bytesCount,
+            errorCount: errorCount + 1);
         break;
       }
     }
@@ -136,6 +200,7 @@ class YoutubeHttpClient extends http.BaseClient {
   ///
   Future<int?> getContentLength(dynamic url, {Map<String, String> headers = const {}, bool validate = true}) async {
     var response = await head(url, headers: headers);
+    if (_closed) throw HttpClientClosedException();
 
     if (validate) {
       _validateResponse(response, response.statusCode);
@@ -170,24 +235,31 @@ class YoutubeHttpClient extends http.BaseClient {
 
     final url = Uri.parse('https://www.youtube.com/youtubei/v1/$action?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8');
 
-    return retry<JsonMap>(() async {
+    return retry<JsonMap>(this, () async {
       final raw = await post(url, body: json.encode(body));
+      if (_closed) throw HttpClientClosedException();
+
       return json.decode(raw.body);
     });
   }
 
   @override
-  void close() => _httpClient.close();
+  void close() {
+    _closed = true;
+    _httpClient.close();
+  }
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
+    if (_closed) throw HttpClientClosedException();
+
     _defaultHeaders.forEach((key, value) {
       if (request.headers[key] == null) {
         request.headers[key] = _defaultHeaders[key]!;
       }
     });
     // print('Request: $request');
-//    print('Stack:\n${StackTrace.current}');
+    // print('Stack:\n${StackTrace.current}');
     return _httpClient.send(request);
   }
 }

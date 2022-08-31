@@ -23,6 +23,8 @@ class PlaylistPage extends YoutubePage<_InitialData> {
 
   late final int? viewCount = initialData.viewCount;
 
+  late final int? videoCount = initialData.videoCount;
+
   /// InitialData
   PlaylistPage.id(this.playlistId, _InitialData initialData)
       : super(null, null, initialData);
@@ -45,7 +47,7 @@ class PlaylistPage extends YoutubePage<_InitialData> {
     String id,
   ) async {
     var url = 'https://www.youtube.com/playlist?list=$id&hl=en&persist_hl=1';
-    return retry(() async {
+    return retry(httpClient, () async {
       var raw = await httpClient.getString(url);
       return PlaylistPage.parse(raw, id);
     });
@@ -74,7 +76,8 @@ class _InitialData extends InitialData {
       ?.get('videoOwnerRenderer')
       ?.get('title')
       ?.getT<List<dynamic>>('runs')
-      ?.parseRuns();
+      ?.cast<Map<dynamic, dynamic>>()
+      .parseRuns();
 
   late final String? description = root
       .get('metadata')
@@ -90,6 +93,20 @@ class _InitialData extends InitialData {
       ?.getList('stats')
       ?.elementAtSafe(1)
       ?.getT<String>('simpleText')
+      ?.parseInt();
+
+  // sidebar.playlistSidebarRenderer.items[0].playlistSidebarPrimaryInfoRenderer.stats
+  late final int? videoCount = root
+      .get('sidebar')
+      ?.get('playlistSidebarRenderer')
+      ?.getList('items')
+      ?.firstOrNull
+      ?.get('playlistSidebarPrimaryInfoRenderer')
+      ?.getList('stats')
+      ?.elementAtSafe(0)
+      ?.getList('runs')
+      ?.firstOrNull
+      ?.getT<String>('text')
       ?.parseInt();
 
   late final String? continuationToken =
@@ -160,8 +177,16 @@ class _Video {
   String get id => root.getT<String>('videoId')!;
 
   String get author =>
-      root.get('ownerText')?.getT<List<dynamic>>('runs')?.parseRuns() ??
-      root.get('shortBylineText')?.getT<List<dynamic>>('runs')?.parseRuns() ??
+      root
+          .get('ownerText')
+          ?.getT<List<dynamic>>('runs')
+          ?.cast<Map<dynamic, dynamic>>()
+          .parseRuns() ??
+      root
+          .get('shortBylineText')
+          ?.getT<List<dynamic>>('runs')
+          ?.cast<Map<dynamic, dynamic>>()
+          .parseRuns() ??
       '';
 
   String get channelId =>

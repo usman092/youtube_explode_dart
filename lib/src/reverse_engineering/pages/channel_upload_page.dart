@@ -36,7 +36,7 @@ class ChannelUploadPage extends YoutubePage<_InitialData> {
       YoutubeHttpClient httpClient, String channelId, String sorting) {
     var url =
         'https://www.youtube.com/channel/$channelId/videos?view=0&sort=$sorting&flow=grid';
-    return retry(() async {
+    return retry(httpClient, () async {
       var raw = await httpClient.getString(url);
       return ChannelUploadPage.parse(raw, channelId);
     });
@@ -73,7 +73,7 @@ class _InitialData extends InitialData {
           ?.getList('tabs')
           ?.map((e) => e['tabRenderer'])
           .cast<JsonMap>()
-          .firstWhereOrNull((e) => e['selected'] as bool)
+          .firstWhereOrNull((e) => e['selected'] as bool? ?? false)
           ?.get('content')
           ?.get('sectionListRenderer')
           ?.getList('contents')
@@ -99,7 +99,7 @@ class _InitialData extends InitialData {
           ?.cast<JsonMap>();
     }
     if (context == null) {
-      throw FatalFailureException('Failed to get initial data context.');
+      throw FatalFailureException('Failed to get initial data context.', 0);
     }
     return context;
   }

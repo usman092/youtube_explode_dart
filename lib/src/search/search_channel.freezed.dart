@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'search_channel.dart';
@@ -158,8 +160,7 @@ class __$SearchChannelCopyWithImpl<$Res>
 
 /// @nodoc
 
-@With(BaseSearchContent)
-class _$_SearchChannel with BaseSearchContent implements _SearchChannel {
+class _$_SearchChannel implements _SearchChannel {
   const _$_SearchChannel(this.id, this.name, this.description, this.videoCount);
 
   @override
@@ -188,26 +189,23 @@ class _$_SearchChannel with BaseSearchContent implements _SearchChannel {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _SearchChannel &&
-            (identical(other.id, id) ||
-                const DeepCollectionEquality().equals(other.id, id)) &&
-            (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)) &&
-            (identical(other.description, description) ||
-                const DeepCollectionEquality()
-                    .equals(other.description, description)) &&
-            (identical(other.videoCount, videoCount) ||
-                const DeepCollectionEquality()
-                    .equals(other.videoCount, videoCount)));
+        (other.runtimeType == runtimeType &&
+            other is _SearchChannel &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality()
+                .equals(other.description, description) &&
+            const DeepCollectionEquality()
+                .equals(other.videoCount, videoCount));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(id) ^
-      const DeepCollectionEquality().hash(name) ^
-      const DeepCollectionEquality().hash(description) ^
-      const DeepCollectionEquality().hash(videoCount);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(description),
+      const DeepCollectionEquality().hash(videoCount));
 
   @JsonKey(ignore: true)
   @override
@@ -215,7 +213,7 @@ class _$_SearchChannel with BaseSearchContent implements _SearchChannel {
       __$SearchChannelCopyWithImpl<_SearchChannel>(this, _$identity);
 }
 
-abstract class _SearchChannel implements SearchChannel, BaseSearchContent {
+abstract class _SearchChannel implements SearchChannel {
   const factory _SearchChannel(
           ChannelId id, String name, String description, int videoCount) =
       _$_SearchChannel;
@@ -223,20 +221,20 @@ abstract class _SearchChannel implements SearchChannel, BaseSearchContent {
   @override
 
   /// Channel id.
-  ChannelId get id => throw _privateConstructorUsedError;
+  ChannelId get id;
   @override
 
   /// Channel name.
-  String get name => throw _privateConstructorUsedError;
+  String get name;
   @override
 
   /// Description snippet.
   /// Can be empty.
-  String get description => throw _privateConstructorUsedError;
+  String get description;
   @override
 
   /// Channel uploaded videos.
-  int get videoCount => throw _privateConstructorUsedError;
+  int get videoCount;
   @override
   @JsonKey(ignore: true)
   _$SearchChannelCopyWith<_SearchChannel> get copyWith =>

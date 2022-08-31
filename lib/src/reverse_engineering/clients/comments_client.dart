@@ -1,10 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:youtube_explode_dart/src/reverse_engineering/pages/watch_page.dart';
 
 import '../../../youtube_explode_dart.dart';
 import '../../extensions/helpers_extension.dart';
 import '../../retry.dart';
-import '../youtube_http_client.dart';
+import '../pages/watch_page.dart';
 
 class CommentsClient {
   final JsonMap root;
@@ -23,7 +22,7 @@ class CommentsClient {
       YoutubeHttpClient httpClient, Video video) async {
     final watchPage = video.watchPage ??
         await retry<WatchPage>(
-            () async => WatchPage.get(httpClient, video.id.value));
+            httpClient, () async => WatchPage.get(httpClient, video.id.value));
 
     final continuation = watchPage.commentsContinuation;
     if (continuation == null) {
@@ -84,8 +83,10 @@ class CommentsClient {
             ?.getT<String>('token');
   }
 
+  // onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer
   int getCommentsCount() => root
-      .getList('onResponseReceivedEndpoints')![1]
+      .getList('onResponseReceivedEndpoints')!
+      .first
       .get('reloadContinuationItemsCommand')!
       .getList('continuationItems')!
       .first
@@ -143,6 +144,7 @@ class _Comment {
   late final String text = _commentRenderer
       .get('contentText')!
       .getT<List<dynamic>>('runs')!
+      .cast<Map<dynamic, dynamic>>()
       .parseRuns();
 
   late final String publishTime = _commentRenderer
@@ -155,6 +157,12 @@ class _Comment {
       .get('voteCount')
       ?.getT<String>('simpleText')
       ?.parseIntWithUnits();
+
+  late final bool isHearted = _commentRenderer
+          .get('actionButtons')
+          ?.get('commentActionButtonsRenderer')
+          ?.get('creatorHeart') !=
+      null;
 
   _Comment(this.root);
 

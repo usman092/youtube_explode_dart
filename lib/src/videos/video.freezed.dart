@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'video.dart';
@@ -22,6 +24,7 @@ class _$VideoTearOff {
       String author,
       ChannelId channelId,
       DateTime? uploadDate,
+      String? uploadDateRaw,
       DateTime? publishDate,
       String description,
       Duration? duration,
@@ -36,6 +39,7 @@ class _$VideoTearOff {
       author,
       channelId,
       uploadDate,
+      uploadDateRaw,
       publishDate,
       description,
       duration,
@@ -69,6 +73,7 @@ mixin _$Video {
   /// Note: For search queries it is calculated with:
   ///   DateTime.now() - how much time is was published.
   DateTime? get uploadDate => throw _privateConstructorUsedError;
+  String? get uploadDateRaw => throw _privateConstructorUsedError;
 
   /// Video publish date.
   DateTime? get publishDate => throw _privateConstructorUsedError;
@@ -112,6 +117,7 @@ abstract class $VideoCopyWith<$Res> {
       String author,
       ChannelId channelId,
       DateTime? uploadDate,
+      String? uploadDateRaw,
       DateTime? publishDate,
       String description,
       Duration? duration,
@@ -142,6 +148,7 @@ class _$VideoCopyWithImpl<$Res> implements $VideoCopyWith<$Res> {
     Object? author = freezed,
     Object? channelId = freezed,
     Object? uploadDate = freezed,
+    Object? uploadDateRaw = freezed,
     Object? publishDate = freezed,
     Object? description = freezed,
     Object? duration = freezed,
@@ -172,6 +179,10 @@ class _$VideoCopyWithImpl<$Res> implements $VideoCopyWith<$Res> {
           ? _value.uploadDate
           : uploadDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      uploadDateRaw: uploadDateRaw == freezed
+          ? _value.uploadDateRaw
+          : uploadDateRaw // ignore: cast_nullable_to_non_nullable
+              as String?,
       publishDate: publishDate == freezed
           ? _value.publishDate
           : publishDate // ignore: cast_nullable_to_non_nullable
@@ -247,6 +258,7 @@ abstract class _$VideoCopyWith<$Res> implements $VideoCopyWith<$Res> {
       String author,
       ChannelId channelId,
       DateTime? uploadDate,
+      String? uploadDateRaw,
       DateTime? publishDate,
       String description,
       Duration? duration,
@@ -282,6 +294,7 @@ class __$VideoCopyWithImpl<$Res> extends _$VideoCopyWithImpl<$Res>
     Object? author = freezed,
     Object? channelId = freezed,
     Object? uploadDate = freezed,
+    Object? uploadDateRaw = freezed,
     Object? publishDate = freezed,
     Object? description = freezed,
     Object? duration = freezed,
@@ -312,6 +325,10 @@ class __$VideoCopyWithImpl<$Res> extends _$VideoCopyWithImpl<$Res>
           ? _value.uploadDate
           : uploadDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      uploadDateRaw == freezed
+          ? _value.uploadDateRaw
+          : uploadDateRaw // ignore: cast_nullable_to_non_nullable
+              as String?,
       publishDate == freezed
           ? _value.publishDate
           : publishDate // ignore: cast_nullable_to_non_nullable
@@ -357,6 +374,7 @@ class _$_Video extends _Video {
       this.author,
       this.channelId,
       this.uploadDate,
+      this.uploadDateRaw,
       this.publishDate,
       this.description,
       this.duration,
@@ -389,6 +407,8 @@ class _$_Video extends _Video {
   /// Note: For search queries it is calculated with:
   ///   DateTime.now() - how much time is was published.
   final DateTime? uploadDate;
+  @override
+  final String? uploadDateRaw;
   @override
 
   /// Video publish date.
@@ -427,66 +447,53 @@ class _$_Video extends _Video {
 
   @override
   String toString() {
-    return 'Video._internal(id: $id, title: $title, author: $author, channelId: $channelId, uploadDate: $uploadDate, publishDate: $publishDate, description: $description, duration: $duration, thumbnails: $thumbnails, keywords: $keywords, engagement: $engagement, isLive: $isLive, watchPage: $watchPage)';
+    return 'Video._internal(id: $id, title: $title, author: $author, channelId: $channelId, uploadDate: $uploadDate, uploadDateRaw: $uploadDateRaw, publishDate: $publishDate, description: $description, duration: $duration, thumbnails: $thumbnails, keywords: $keywords, engagement: $engagement, isLive: $isLive, watchPage: $watchPage)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Video &&
-            (identical(other.id, id) ||
-                const DeepCollectionEquality().equals(other.id, id)) &&
-            (identical(other.title, title) ||
-                const DeepCollectionEquality().equals(other.title, title)) &&
-            (identical(other.author, author) ||
-                const DeepCollectionEquality().equals(other.author, author)) &&
-            (identical(other.channelId, channelId) ||
-                const DeepCollectionEquality()
-                    .equals(other.channelId, channelId)) &&
-            (identical(other.uploadDate, uploadDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.uploadDate, uploadDate)) &&
-            (identical(other.publishDate, publishDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.publishDate, publishDate)) &&
-            (identical(other.description, description) ||
-                const DeepCollectionEquality()
-                    .equals(other.description, description)) &&
-            (identical(other.duration, duration) ||
-                const DeepCollectionEquality()
-                    .equals(other.duration, duration)) &&
-            (identical(other.thumbnails, thumbnails) ||
-                const DeepCollectionEquality()
-                    .equals(other.thumbnails, thumbnails)) &&
-            (identical(other.keywords, keywords) ||
-                const DeepCollectionEquality()
-                    .equals(other.keywords, keywords)) &&
-            (identical(other.engagement, engagement) ||
-                const DeepCollectionEquality()
-                    .equals(other.engagement, engagement)) &&
-            (identical(other.isLive, isLive) ||
-                const DeepCollectionEquality().equals(other.isLive, isLive)) &&
-            (identical(other.watchPage, watchPage) ||
-                const DeepCollectionEquality()
-                    .equals(other.watchPage, watchPage)));
+        (other.runtimeType == runtimeType &&
+            other is _Video &&
+            const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.title, title) &&
+            const DeepCollectionEquality().equals(other.author, author) &&
+            const DeepCollectionEquality().equals(other.channelId, channelId) &&
+            const DeepCollectionEquality()
+                .equals(other.uploadDate, uploadDate) &&
+            const DeepCollectionEquality()
+                .equals(other.uploadDateRaw, uploadDateRaw) &&
+            const DeepCollectionEquality()
+                .equals(other.publishDate, publishDate) &&
+            const DeepCollectionEquality()
+                .equals(other.description, description) &&
+            const DeepCollectionEquality().equals(other.duration, duration) &&
+            const DeepCollectionEquality()
+                .equals(other.thumbnails, thumbnails) &&
+            const DeepCollectionEquality().equals(other.keywords, keywords) &&
+            const DeepCollectionEquality()
+                .equals(other.engagement, engagement) &&
+            const DeepCollectionEquality().equals(other.isLive, isLive) &&
+            const DeepCollectionEquality().equals(other.watchPage, watchPage));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(id) ^
-      const DeepCollectionEquality().hash(title) ^
-      const DeepCollectionEquality().hash(author) ^
-      const DeepCollectionEquality().hash(channelId) ^
-      const DeepCollectionEquality().hash(uploadDate) ^
-      const DeepCollectionEquality().hash(publishDate) ^
-      const DeepCollectionEquality().hash(description) ^
-      const DeepCollectionEquality().hash(duration) ^
-      const DeepCollectionEquality().hash(thumbnails) ^
-      const DeepCollectionEquality().hash(keywords) ^
-      const DeepCollectionEquality().hash(engagement) ^
-      const DeepCollectionEquality().hash(isLive) ^
-      const DeepCollectionEquality().hash(watchPage);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(title),
+      const DeepCollectionEquality().hash(author),
+      const DeepCollectionEquality().hash(channelId),
+      const DeepCollectionEquality().hash(uploadDate),
+      const DeepCollectionEquality().hash(uploadDateRaw),
+      const DeepCollectionEquality().hash(publishDate),
+      const DeepCollectionEquality().hash(description),
+      const DeepCollectionEquality().hash(duration),
+      const DeepCollectionEquality().hash(thumbnails),
+      const DeepCollectionEquality().hash(keywords),
+      const DeepCollectionEquality().hash(engagement),
+      const DeepCollectionEquality().hash(isLive),
+      const DeepCollectionEquality().hash(watchPage));
 
   @JsonKey(ignore: true)
   @override
@@ -501,6 +508,7 @@ abstract class _Video extends Video {
       String author,
       ChannelId channelId,
       DateTime? uploadDate,
+      String? uploadDateRaw,
       DateTime? publishDate,
       String description,
       Duration? duration,
@@ -514,61 +522,62 @@ abstract class _Video extends Video {
   @override
 
   /// Video ID.
-  VideoId get id => throw _privateConstructorUsedError;
+  VideoId get id;
   @override
 
   /// Video title.
-  String get title => throw _privateConstructorUsedError;
+  String get title;
   @override
 
   /// Video author.
-  String get author => throw _privateConstructorUsedError;
+  String get author;
   @override
 
   /// Video author Id.
-  ChannelId get channelId => throw _privateConstructorUsedError;
+  ChannelId get channelId;
   @override
 
   /// Video upload date.
   /// Note: For search queries it is calculated with:
   ///   DateTime.now() - how much time is was published.
-  DateTime? get uploadDate => throw _privateConstructorUsedError;
+  DateTime? get uploadDate;
+  @override
+  String? get uploadDateRaw;
   @override
 
   /// Video publish date.
-  DateTime? get publishDate => throw _privateConstructorUsedError;
+  DateTime? get publishDate;
   @override
 
   /// Video description.
-  String get description => throw _privateConstructorUsedError;
+  String get description;
   @override
 
   /// Duration of the video.
-  Duration? get duration => throw _privateConstructorUsedError;
+  Duration? get duration;
   @override
 
   /// Available thumbnails for this video.
-  ThumbnailSet get thumbnails => throw _privateConstructorUsedError;
+  ThumbnailSet get thumbnails;
   @override
 
   /// Search keywords used for this video.
-  UnmodifiableListView<String> get keywords =>
-      throw _privateConstructorUsedError;
+  UnmodifiableListView<String> get keywords;
   @override
 
   /// Engagement statistics for this video.
-  Engagement get engagement => throw _privateConstructorUsedError;
+  Engagement get engagement;
   @override
 
   /// Returns true if this is a live stream.
 //ignore: avoid_positional_boolean_parameters
-  bool get isLive => throw _privateConstructorUsedError;
+  bool get isLive;
   @override
 
   /// Used internally.
   /// Shouldn't be used in the code.
   @internal
-  WatchPage? get watchPage => throw _privateConstructorUsedError;
+  WatchPage? get watchPage;
   @override
   @JsonKey(ignore: true)
   _$VideoCopyWith<_Video> get copyWith => throw _privateConstructorUsedError;

@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'bitrate.dart';
@@ -12,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Bitrate _$BitrateFromJson(Map<String, dynamic> json) {
+  return _Bitrate.fromJson(json);
+}
+
 /// @nodoc
 class _$BitrateTearOff {
   const _$BitrateTearOff();
@@ -20,6 +26,10 @@ class _$BitrateTearOff {
     return _Bitrate(
       bitsPerSecond,
     );
+  }
+
+  Bitrate fromJson(Map<String, Object?> json) {
+    return Bitrate.fromJson(json);
   }
 }
 
@@ -31,6 +41,7 @@ mixin _$Bitrate {
   /// Bits per second.
   int get bitsPerSecond => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $BitrateCopyWith<Bitrate> get copyWith => throw _privateConstructorUsedError;
 }
@@ -94,10 +105,12 @@ class __$BitrateCopyWithImpl<$Res> extends _$BitrateCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-@With.fromString('Comparable<Bitrate>')
-class _$_Bitrate extends _Bitrate with Comparable<Bitrate> {
+@JsonSerializable()
+class _$_Bitrate extends _Bitrate {
   const _$_Bitrate(this.bitsPerSecond) : super._();
+
+  factory _$_Bitrate.fromJson(Map<String, dynamic> json) =>
+      _$$_BitrateFromJson(json);
 
   @override
 
@@ -107,30 +120,37 @@ class _$_Bitrate extends _Bitrate with Comparable<Bitrate> {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Bitrate &&
-            (identical(other.bitsPerSecond, bitsPerSecond) ||
-                const DeepCollectionEquality()
-                    .equals(other.bitsPerSecond, bitsPerSecond)));
+        (other.runtimeType == runtimeType &&
+            other is _Bitrate &&
+            const DeepCollectionEquality()
+                .equals(other.bitsPerSecond, bitsPerSecond));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(bitsPerSecond);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(bitsPerSecond));
 
   @JsonKey(ignore: true)
   @override
   _$BitrateCopyWith<_Bitrate> get copyWith =>
       __$BitrateCopyWithImpl<_Bitrate>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_BitrateToJson(this);
+  }
 }
 
-abstract class _Bitrate extends Bitrate implements Comparable<Bitrate> {
+abstract class _Bitrate extends Bitrate {
   const factory _Bitrate(int bitsPerSecond) = _$_Bitrate;
   const _Bitrate._() : super._();
+
+  factory _Bitrate.fromJson(Map<String, dynamic> json) = _$_Bitrate.fromJson;
 
   @override
 
   /// Bits per second.
-  int get bitsPerSecond => throw _privateConstructorUsedError;
+  int get bitsPerSecond;
   @override
   @JsonKey(ignore: true)
   _$BitrateCopyWith<_Bitrate> get copyWith =>

@@ -30,6 +30,8 @@ class ChannelPage extends YoutubePage<_InitialData> {
       root!.querySelector('meta[property="og:image"]')?.attributes['content'] ??
       '';
 
+  String get channelBannerUrl => initialData.bannerUrl ?? '';
+
   int? get subscribersCount => initialData.subscribersCount;
 
   ///
@@ -40,7 +42,7 @@ class ChannelPage extends YoutubePage<_InitialData> {
   static Future<ChannelPage> get(YoutubeHttpClient httpClient, String id) {
     var url = 'https://www.youtube.com/channel/$id?hl=en';
 
-    return retry(() async {
+    return retry(httpClient, () async {
       var raw = await httpClient.getString(url);
       var result = ChannelPage.parse(raw);
 
@@ -56,14 +58,22 @@ class ChannelPage extends YoutubePage<_InitialData> {
       YoutubeHttpClient httpClient, String username) {
     var url = 'https://www.youtube.com/user/$username?hl=en';
 
-    return retry(() async {
-      var raw = await httpClient.getString(url);
-      var result = ChannelPage.parse(raw);
+    return retry(httpClient, () async {
+      try {
+        var raw = await httpClient.getString(url);
+        var result = ChannelPage.parse(raw);
 
-      if (!result.isOk) {
-        throw TransientFailureException('Channel page is broken');
+        if (!result.isOk) {
+          throw TransientFailureException('Channel page is broken');
+        }
+        return result;
+      } on FatalFailureException catch (e) {
+        if (e.statusCode != 404) {
+          rethrow;
+        }
+        url = 'https://www.youtube.com/c/$username?hl=en';
       }
-      return result;
+      throw FatalFailureException('', 0);
     });
   }
 }
@@ -110,4 +120,12 @@ class _InitialData extends InitialData {
 
     return (count * multiplier).toInt();
   }
+
+  String? get bannerUrl => root
+      .get('header')
+      ?.get('c4TabbedHeaderRenderer')
+      ?.get('banner')
+      ?.getList('thumbnails')
+      ?.first
+      .getT<String>('url');
 }

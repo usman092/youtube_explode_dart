@@ -3,7 +3,14 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 void main() {
   group('These are valid usernames', () {
-    for (final val in {'TheTyrrr', 'KannibalenRecords', 'JClayton1994'}) {
+    for (final val in {
+      'TheTyrrr',
+      'KannibalenRecords',
+      'JClayton1994',
+      'The_Tyrrr',
+      'A1B2C3-',
+      '=0123456789ABCDEF',
+    }) {
       test('Username - $val', () {
         expect(Username(val).value, val);
       });
@@ -13,6 +20,7 @@ void main() {
     for (final val in {
       ['youtube.com/user/ProZD', 'ProZD'],
       ['youtube.com/user/TheTyrrr', 'TheTyrrr'],
+      ['youtube.com/user/P_roZD', 'P_roZD'],
     }) {
       test('UsernameURL - $val', () {
         expect(Username(val[0]).value, val[1]);
@@ -21,10 +29,7 @@ void main() {
   });
   group('These are invalid usernames', () {
     for (final val in {
-      'The_Tyrrr',
       '0123456789ABCDEFGHIJK',
-      'A1B2C3-',
-      '=0123456789ABCDEF'
     }) {
       test('Username - $val', () {
         expect(() => Username(val), throwsArgumentError);
@@ -34,7 +39,6 @@ void main() {
 
   group('These are not valid username urls', () {
     for (final val in {
-      'youtube.com/user/P_roZD',
       'example.com/user/ProZD',
     }) {
       test('UsernameURL - $val', () {

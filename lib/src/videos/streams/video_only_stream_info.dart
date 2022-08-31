@@ -1,13 +1,15 @@
-import 'bitrate.dart';
-import 'filesize.dart';
-import 'framerate.dart';
-import 'stream_container.dart';
-import 'video_quality.dart';
-import 'video_resolution.dart';
-import 'video_stream_info.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:http_parser/http_parser.dart';
+
+import '../../../youtube_explode_dart.dart';
+import '../../reverse_engineering/models/fragment.dart';
+import 'stream_info.dart';
+
+part 'video_only_stream_info.g.dart';
 
 /// YouTube media stream that only contains video.
-class VideoOnlyStreamInfo implements VideoStreamInfo {
+@JsonSerializable()
+class VideoOnlyStreamInfo with StreamInfo, VideoStreamInfo {
   @override
   final int tag;
 
@@ -27,7 +29,10 @@ class VideoOnlyStreamInfo implements VideoStreamInfo {
   final String videoCodec;
 
   @override
-  final String videoQualityLabel;
+  final String qualityLabel;
+
+  @override
+  String get videoQualityLabel => qualityLabel;
 
   @override
   final VideoQuality videoQuality;
@@ -38,7 +43,13 @@ class VideoOnlyStreamInfo implements VideoStreamInfo {
   @override
   final Framerate framerate;
 
-  /// Initializes an instance of [VideoOnlyStreamInfo]
+  @override
+  final List<Fragment> fragments;
+
+  @override
+  @JsonKey(toJson: mediaTypeToJson, fromJson: mediaTypeFromJson)
+  final MediaType codec;
+
   VideoOnlyStreamInfo(
       this.tag,
       this.url,
@@ -46,11 +57,20 @@ class VideoOnlyStreamInfo implements VideoStreamInfo {
       this.size,
       this.bitrate,
       this.videoCodec,
-      this.videoQualityLabel,
+      this.qualityLabel,
       this.videoQuality,
       this.videoResolution,
-      this.framerate);
+      this.framerate,
+      this.fragments,
+      this.codec);
 
   @override
-  String toString() => 'Video-only ($tag | $videoQualityLabel | $container)';
+  String toString() =>
+      'Video-only ($tag | ${videoResolution}p${framerate.framesPerSecond} | $container)';
+
+  factory VideoOnlyStreamInfo.fromJson(Map<String, dynamic> json) =>
+      _$VideoOnlyStreamInfoFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$VideoOnlyStreamInfoToJson(this);
 }

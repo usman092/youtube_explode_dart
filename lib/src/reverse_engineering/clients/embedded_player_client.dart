@@ -1,14 +1,13 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:http_parser/http_parser.dart';
 
 import '../../../youtube_explode_dart.dart';
-import '../../exceptions/exceptions.dart';
 import '../../extensions/helpers_extension.dart';
 import '../../retry.dart';
 import '../models/stream_info_provider.dart';
-import '../youtube_http_client.dart';
 
 ///
 class EmbeddedPlayerClient {
@@ -23,15 +22,21 @@ class EmbeddedPlayerClient {
   late final bool isVideoAvailable = status.toLowerCase() == 'ok';
 
   ///
-  late final Iterable<_StreamInfo> muxedStreams =
-      root.get('streamingData')?.getList('formats')?.map((e) => _StreamInfo(e)) ?? const [];
+  late final Iterable<_StreamInfo> muxedStreams = root
+          .get('streamingData')
+          ?.getList('formats')
+          ?.map((e) => _StreamInfo(e, StreamSource.muxed)) ??
+      const [];
 
   ///
-  late final Iterable<_StreamInfo> adaptiveStreams =
-      root.get('streamingData')?.getList('adaptiveFormats')?.map((e) => _StreamInfo(e)) ?? const [];
+  late final Iterable<_StreamInfo> adaptiveStreams = root
+          .get('streamingData')
+          ?.getList('adaptiveFormats')
+          ?.map((e) => _StreamInfo(e, StreamSource.adaptive)) ??
+      const [];
 
   ///
-  late final Iterable<_StreamInfo> streams = [...muxedStreams, ...adaptiveStreams];
+  late final List<_StreamInfo> streams = [...muxedStreams, ...adaptiveStreams];
 
   ///
   EmbeddedPlayerClient(this.root);
@@ -44,14 +49,18 @@ class EmbeddedPlayerClient {
   static Future<EmbeddedPlayerClient> get(YoutubeHttpClient httpClient, String videoId) {
     final body = {
       'context': const {
-        'client': {'hl': 'en', 'clientName': 'ANDROID_EMBEDDED_PLAYER', 'clientVersion': '16.05'}
+        'client': {
+          'hl': 'en',
+          'clientName': 'ANDROID',
+          'clientVersion': '16.46.37'
+        }
       },
       'videoId': videoId
     };
 
     final url = Uri.parse('https://www.youtube.com/youtubei/v1/player');
 
-    return retry(() async {
+    return retry(httpClient, () async {
       final raw = await httpClient.post(url,
           body: json.encode(body),
           headers: {'X-Goog-Api-Key': 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8'},
@@ -68,47 +77,93 @@ class EmbeddedPlayerClient {
 }
 
 class _StreamInfo extends StreamInfoProvider {
+  static final _contentLenExp = RegExp(r'[\?&]clen=(\d+)');
+
+  /// Json parsed map
   final JsonMap root;
 
   @override
-  late final int tag = root['itag']!;
+  late final int? bitrate = root.getT<int>('bitrate');
 
   @override
-  late final String url = root['url']!;
+  late final String container = codec.subtype;
 
   @override
-  late final int? contentLength =
-      int.tryParse(root['contentLength'] ?? StreamInfoProvider.contentLenExp.firstMatch(url)?.group(1) ?? '');
+  late final int? contentLength = int.tryParse(
+      root.getT<String>('contentLength') ??
+          _contentLenExp.firstMatch(url)?.group(1) ??
+          '');
 
   @override
-  late final int bitrate = root['bitrate']!;
-
-  late final MediaType mimeType = MediaType.parse(root['mimeType']!);
+  late final int? framerate = root.getT<int>('fps');
 
   @override
-  late final String container = mimeType.subtype;
-
-  late final List<String> codecs =
-      mimeType.parameters['codecs']!.split(',').map((e) => e.trim()).toList().cast<String>();
+  late final String? signature =
+      Uri.splitQueryString(root.getT<String>('signatureCipher') ?? '')['s'];
 
   @override
-  late final String audioCodec = codecs.last;
+  late final String? signatureParameter = Uri.splitQueryString(
+          root.getT<String>('cipher') ?? '')['sp'] ??
+      Uri.splitQueryString(root.getT<String>('signatureCipher') ?? '')['sp'];
 
   @override
-  late final String? videoCodec = isAudioOnly ? null : codecs.first;
-
-  late final bool isAudioOnly = mimeType.type == 'audio';
+  late final int tag = root.getT<int>('itag')!;
 
   @override
-  late final String? videoQualityLabel = root['quality_label'];
+  late final String url = root.getT<String>('url') ??
+      Uri.splitQueryString(root.getT<String>('cipher') ?? '')['url'] ??
+      Uri.splitQueryString(root.getT<String>('signatureCipher') ?? '')['url']!;
 
   @override
-  late final int? videoWidth = root['width'];
+  late final String? videoCodec = isAudioOnly
+      ? null
+      : codecs?.split(',').firstOrNull?.trim().nullIfWhitespace;
 
   @override
-  late final int? videoHeight = root['height'];
+  late final int? videoHeight = root.getT<int>('height');
 
   @override
-  late final int? framerate = root['fps'] ?? 0;
-  _StreamInfo(this.root);
+  @Deprecated('Use qualityLabel')
+  String get videoQualityLabel => qualityLabel;
+
+  @override
+  late final String qualityLabel = root.getT<String>('qualityLabel') ??
+      'tiny'; // Not sure if 'tiny' is the correct placeholder.
+
+  @override
+  late final int? videoWidth = root.getT<int>('width');
+
+  late final bool isAudioOnly = codec.type == 'audio';
+
+  @override
+  late final MediaType codec = _getMimeType()!;
+
+  MediaType? _getMimeType() {
+    var mime = root.getT<String>('mimeType');
+    if (mime == null) {
+      return null;
+    }
+    return MediaType.parse(mime);
+  }
+
+  late final String? codecs = codec.parameters['codecs']?.toLowerCase();
+
+  @override
+  late final String? audioCodec =
+      isAudioOnly ? codecs : _getAudioCodec(codecs?.split(','))?.trim();
+
+  String? _getAudioCodec(List<String>? codecs) {
+    if (codecs == null) {
+      return null;
+    }
+    if (codecs.length == 1) {
+      return null;
+    }
+    return codecs.last;
+  }
+
+  @override
+  final StreamSource source;
+
+  _StreamInfo(this.root, this.source);
 }

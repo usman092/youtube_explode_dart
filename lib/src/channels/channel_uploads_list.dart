@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:youtube_explode_dart/src/reverse_engineering/pages/channel_upload_page.dart';
 
 import '../../youtube_explode_dart.dart';
 import '../extensions/helpers_extension.dart';
+import '../reverse_engineering/pages/channel_upload_page.dart';
 
 /// This list contains a channel uploads.
 /// This behaves like a [List] but has the [SearchList.nextPage] to get the next batch of videos.
@@ -29,20 +29,22 @@ class ChannelUploadsList extends DelegatingList<Video> {
       return null;
     }
     return ChannelUploadsList(
-        page.initialData.uploads
+        page.uploads
             .map((e) => Video(
-                e.videoId,
-                e.videoTitle,
-                author,
-                channel,
-                e.videoUploadDate.toDateTime(),
-                null,
-                '',
-                e.videoDuration,
-                ThumbnailSet(e.videoId.value),
-                null,
-                Engagement(e.videoViews, null, null),
-                false))
+                  e.videoId,
+                  e.videoTitle,
+                  author,
+                  channel,
+                  e.videoUploadDate.toDateTime(),
+                  e.videoUploadDate,
+                  null,
+                  '',
+                  e.videoDuration,
+                  ThumbnailSet(e.videoId.value),
+                  null,
+                  Engagement(e.videoViews, null, null),
+                  false,
+                ))
             .toList(),
         author,
         channel,

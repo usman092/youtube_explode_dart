@@ -1,7 +1,6 @@
-import 'package:youtube_explode_dart/src/channels/channel_id.dart';
-import 'package:youtube_explode_dart/src/reverse_engineering/pages/playlist_page.dart';
-
+import '../channels/channel_id.dart';
 import '../common/common.dart';
+import '../reverse_engineering/pages/playlist_page.dart';
 import '../reverse_engineering/youtube_http_client.dart';
 import '../videos/video.dart';
 import '../videos/video_id.dart';
@@ -19,14 +18,17 @@ class PlaylistClient {
   Future<Playlist> get(dynamic id) async {
     id = PlaylistId.fromString(id);
 
-    var response = await PlaylistPage.get(_httpClient, id.value);
+    var response =
+        await PlaylistPage.get(_httpClient, (id as PlaylistId).value);
     return Playlist(
-        id,
-        response.title ?? '',
-        response.author ?? '',
-        response.description ?? '',
-        ThumbnailSet(id.value),
-        Engagement(response.viewCount ?? 0, null, null));
+      id,
+      response.title ?? '',
+      response.author ?? '',
+      response.description ?? '',
+      ThumbnailSet(id.value),
+      Engagement(response.viewCount ?? 0, null, null),
+      response.videoCount,
+    );
   }
 
   /// Enumerates videos included in the specified playlist.
@@ -50,18 +52,20 @@ class PlaylistClient {
         }
 
         yield Video(
-            VideoId(videoId),
-            video.title,
-            video.author,
-            ChannelId(video.channelId),
-            null,
-            null,
-            video.description,
-            video.duration,
-            ThumbnailSet(videoId),
-            null,
-            Engagement(video.viewCount, null, null),
-            false);
+          VideoId(videoId),
+          video.title,
+          video.author,
+          ChannelId(video.channelId),
+          null,
+          null,
+          null,
+          video.description,
+          video.duration,
+          ThumbnailSet(videoId),
+          null,
+          Engagement(video.viewCount, null, null),
+          false,
+        );
       }
       page = await page.nextPage(_httpClient);
     }

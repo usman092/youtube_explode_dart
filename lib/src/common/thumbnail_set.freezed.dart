@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'thumbnail_set.dart';
@@ -116,14 +118,14 @@ class _$_ThumbnailSet extends _ThumbnailSet {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _ThumbnailSet &&
-            (identical(other.videoId, videoId) ||
-                const DeepCollectionEquality().equals(other.videoId, videoId)));
+        (other.runtimeType == runtimeType &&
+            other is _ThumbnailSet &&
+            const DeepCollectionEquality().equals(other.videoId, videoId));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(videoId);
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(videoId));
 
   @JsonKey(ignore: true)
   @override
@@ -138,7 +140,7 @@ abstract class _ThumbnailSet extends ThumbnailSet {
   @override
 
   /// Video id.
-  String get videoId => throw _privateConstructorUsedError;
+  String get videoId;
   @override
   @JsonKey(ignore: true)
   _$ThumbnailSetCopyWith<_ThumbnailSet> get copyWith =>

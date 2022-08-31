@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'filesize.dart';
@@ -12,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+FileSize _$FileSizeFromJson(Map<String, dynamic> json) {
+  return _FileSize.fromJson(json);
+}
+
 /// @nodoc
 class _$FileSizeTearOff {
   const _$FileSizeTearOff();
@@ -20,6 +26,10 @@ class _$FileSizeTearOff {
     return _FileSize(
       totalBytes,
     );
+  }
+
+  FileSize fromJson(Map<String, Object?> json) {
+    return FileSize.fromJson(json);
   }
 }
 
@@ -31,6 +41,7 @@ mixin _$FileSize {
   /// Total bytes.
   int get totalBytes => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $FileSizeCopyWith<FileSize> get copyWith =>
       throw _privateConstructorUsedError;
@@ -95,10 +106,12 @@ class __$FileSizeCopyWithImpl<$Res> extends _$FileSizeCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-@With.fromString('Comparable<FileSize>')
-class _$_FileSize extends _FileSize with Comparable<FileSize> {
+@JsonSerializable()
+class _$_FileSize extends _FileSize {
   const _$_FileSize(this.totalBytes) : super._();
+
+  factory _$_FileSize.fromJson(Map<String, dynamic> json) =>
+      _$$_FileSizeFromJson(json);
 
   @override
 
@@ -108,30 +121,37 @@ class _$_FileSize extends _FileSize with Comparable<FileSize> {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _FileSize &&
-            (identical(other.totalBytes, totalBytes) ||
-                const DeepCollectionEquality()
-                    .equals(other.totalBytes, totalBytes)));
+        (other.runtimeType == runtimeType &&
+            other is _FileSize &&
+            const DeepCollectionEquality()
+                .equals(other.totalBytes, totalBytes));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(totalBytes);
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(totalBytes));
 
   @JsonKey(ignore: true)
   @override
   _$FileSizeCopyWith<_FileSize> get copyWith =>
       __$FileSizeCopyWithImpl<_FileSize>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_FileSizeToJson(this);
+  }
 }
 
-abstract class _FileSize extends FileSize implements Comparable<FileSize> {
+abstract class _FileSize extends FileSize {
   const factory _FileSize(int totalBytes) = _$_FileSize;
   const _FileSize._() : super._();
+
+  factory _FileSize.fromJson(Map<String, dynamic> json) = _$_FileSize.fromJson;
 
   @override
 
   /// Total bytes.
-  int get totalBytes => throw _privateConstructorUsedError;
+  int get totalBytes;
   @override
   @JsonKey(ignore: true)
   _$FileSizeCopyWith<_FileSize> get copyWith =>

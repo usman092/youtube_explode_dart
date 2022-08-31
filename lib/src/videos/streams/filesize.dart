@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'filesize.freezed.dart';
+part 'filesize.g.dart';
 
 /// Encapsulates file size.
 @freezed
@@ -15,13 +16,18 @@ class FileSize with Comparable<FileSize>, _$FileSize {
   double get totalGigaBytes => totalMegaBytes / 1024;
 
   /// Initializes an instance of [FileSize]
-  @With.fromString('Comparable<FileSize>')
+  //@With<Comparable<FileSize>>()
   const factory FileSize(
 
       /// Total bytes.
       int totalBytes) = _FileSize;
 
+  factory FileSize.fromJson(Map<String, dynamic> json) =>
+      _$FileSizeFromJson(json);
+
   const FileSize._();
+
+  static const FileSize unknown = FileSize(0);
 
   @override
   int compareTo(FileSize other) => totalBytes.compareTo(other.totalBytes);
@@ -53,5 +59,6 @@ class FileSize with Comparable<FileSize>, _$FileSize {
   }
 
   @override
-  String toString() => '${_getLargestValue()} ${_getLargestSymbol()}';
+  String toString() =>
+      '${_getLargestValue().toStringAsFixed(2)} ${_getLargestSymbol()}';
 }

@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'comment.dart';
@@ -16,8 +18,15 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$CommentTearOff {
   const _$CommentTearOff();
 
-  _Comment call(String author, ChannelId channelId, String text, int likeCount,
-      String publishedTime, int replyCount, @internal String? continuation) {
+  _Comment call(
+      String author,
+      ChannelId channelId,
+      String text,
+      int likeCount,
+      String publishedTime,
+      int replyCount,
+      bool isHearted,
+      @internal String? continuation) {
     return _Comment(
       author,
       channelId,
@@ -25,6 +34,7 @@ class _$CommentTearOff {
       likeCount,
       publishedTime,
       replyCount,
+      isHearted,
       continuation,
     );
   }
@@ -53,6 +63,10 @@ mixin _$Comment {
   /// Comment reply count.
   int get replyCount => throw _privateConstructorUsedError;
 
+  /// True if the comment is hearted by the creator.
+//ignore: avoid_positional_boolean_parameters
+  bool get isHearted => throw _privateConstructorUsedError;
+
   /// Used internally.
   /// Shouldn't be used in the code.
   @internal
@@ -73,6 +87,7 @@ abstract class $CommentCopyWith<$Res> {
       int likeCount,
       String publishedTime,
       int replyCount,
+      bool isHearted,
       @internal String? continuation});
 
   $ChannelIdCopyWith<$Res> get channelId;
@@ -94,6 +109,7 @@ class _$CommentCopyWithImpl<$Res> implements $CommentCopyWith<$Res> {
     Object? likeCount = freezed,
     Object? publishedTime = freezed,
     Object? replyCount = freezed,
+    Object? isHearted = freezed,
     Object? continuation = freezed,
   }) {
     return _then(_value.copyWith(
@@ -121,6 +137,10 @@ class _$CommentCopyWithImpl<$Res> implements $CommentCopyWith<$Res> {
           ? _value.replyCount
           : replyCount // ignore: cast_nullable_to_non_nullable
               as int,
+      isHearted: isHearted == freezed
+          ? _value.isHearted
+          : isHearted // ignore: cast_nullable_to_non_nullable
+              as bool,
       continuation: continuation == freezed
           ? _value.continuation
           : continuation // ignore: cast_nullable_to_non_nullable
@@ -148,6 +168,7 @@ abstract class _$CommentCopyWith<$Res> implements $CommentCopyWith<$Res> {
       int likeCount,
       String publishedTime,
       int replyCount,
+      bool isHearted,
       @internal String? continuation});
 
   @override
@@ -171,6 +192,7 @@ class __$CommentCopyWithImpl<$Res> extends _$CommentCopyWithImpl<$Res>
     Object? likeCount = freezed,
     Object? publishedTime = freezed,
     Object? replyCount = freezed,
+    Object? isHearted = freezed,
     Object? continuation = freezed,
   }) {
     return _then(_Comment(
@@ -198,6 +220,10 @@ class __$CommentCopyWithImpl<$Res> extends _$CommentCopyWithImpl<$Res>
           ? _value.replyCount
           : replyCount // ignore: cast_nullable_to_non_nullable
               as int,
+      isHearted == freezed
+          ? _value.isHearted
+          : isHearted // ignore: cast_nullable_to_non_nullable
+              as bool,
       continuation == freezed
           ? _value.continuation
           : continuation // ignore: cast_nullable_to_non_nullable
@@ -209,8 +235,15 @@ class __$CommentCopyWithImpl<$Res> extends _$CommentCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_Comment implements _Comment {
-  const _$_Comment(this.author, this.channelId, this.text, this.likeCount,
-      this.publishedTime, this.replyCount, @internal this.continuation);
+  const _$_Comment(
+      this.author,
+      this.channelId,
+      this.text,
+      this.likeCount,
+      this.publishedTime,
+      this.replyCount,
+      this.isHearted,
+      @internal this.continuation);
 
   @override
 
@@ -238,6 +271,11 @@ class _$_Comment implements _Comment {
   final int replyCount;
   @override
 
+  /// True if the comment is hearted by the creator.
+//ignore: avoid_positional_boolean_parameters
+  final bool isHearted;
+  @override
+
   /// Used internally.
   /// Shouldn't be used in the code.
   @internal
@@ -245,44 +283,38 @@ class _$_Comment implements _Comment {
 
   @override
   String toString() {
-    return 'Comment(author: $author, channelId: $channelId, text: $text, likeCount: $likeCount, publishedTime: $publishedTime, replyCount: $replyCount, continuation: $continuation)';
+    return 'Comment(author: $author, channelId: $channelId, text: $text, likeCount: $likeCount, publishedTime: $publishedTime, replyCount: $replyCount, isHearted: $isHearted, continuation: $continuation)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Comment &&
-            (identical(other.author, author) ||
-                const DeepCollectionEquality().equals(other.author, author)) &&
-            (identical(other.channelId, channelId) ||
-                const DeepCollectionEquality()
-                    .equals(other.channelId, channelId)) &&
-            (identical(other.text, text) ||
-                const DeepCollectionEquality().equals(other.text, text)) &&
-            (identical(other.likeCount, likeCount) ||
-                const DeepCollectionEquality()
-                    .equals(other.likeCount, likeCount)) &&
-            (identical(other.publishedTime, publishedTime) ||
-                const DeepCollectionEquality()
-                    .equals(other.publishedTime, publishedTime)) &&
-            (identical(other.replyCount, replyCount) ||
-                const DeepCollectionEquality()
-                    .equals(other.replyCount, replyCount)) &&
-            (identical(other.continuation, continuation) ||
-                const DeepCollectionEquality()
-                    .equals(other.continuation, continuation)));
+        (other.runtimeType == runtimeType &&
+            other is _Comment &&
+            const DeepCollectionEquality().equals(other.author, author) &&
+            const DeepCollectionEquality().equals(other.channelId, channelId) &&
+            const DeepCollectionEquality().equals(other.text, text) &&
+            const DeepCollectionEquality().equals(other.likeCount, likeCount) &&
+            const DeepCollectionEquality()
+                .equals(other.publishedTime, publishedTime) &&
+            const DeepCollectionEquality()
+                .equals(other.replyCount, replyCount) &&
+            const DeepCollectionEquality().equals(other.isHearted, isHearted) &&
+            const DeepCollectionEquality()
+                .equals(other.continuation, continuation));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(author) ^
-      const DeepCollectionEquality().hash(channelId) ^
-      const DeepCollectionEquality().hash(text) ^
-      const DeepCollectionEquality().hash(likeCount) ^
-      const DeepCollectionEquality().hash(publishedTime) ^
-      const DeepCollectionEquality().hash(replyCount) ^
-      const DeepCollectionEquality().hash(continuation);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(author),
+      const DeepCollectionEquality().hash(channelId),
+      const DeepCollectionEquality().hash(text),
+      const DeepCollectionEquality().hash(likeCount),
+      const DeepCollectionEquality().hash(publishedTime),
+      const DeepCollectionEquality().hash(replyCount),
+      const DeepCollectionEquality().hash(isHearted),
+      const DeepCollectionEquality().hash(continuation));
 
   @JsonKey(ignore: true)
   @override
@@ -298,38 +330,44 @@ abstract class _Comment implements Comment {
       int likeCount,
       String publishedTime,
       int replyCount,
+      bool isHearted,
       @internal String? continuation) = _$_Comment;
 
   @override
 
   /// Comment author name.
-  String get author => throw _privateConstructorUsedError;
+  String get author;
   @override
 
   /// Comment author channel id.
-  ChannelId get channelId => throw _privateConstructorUsedError;
+  ChannelId get channelId;
   @override
 
   /// Comment text.
-  String get text => throw _privateConstructorUsedError;
+  String get text;
   @override
 
   /// Comment likes count.
-  int get likeCount => throw _privateConstructorUsedError;
+  int get likeCount;
   @override
 
   /// Published time as string. (For example: "2 years ago")
-  String get publishedTime => throw _privateConstructorUsedError;
+  String get publishedTime;
   @override
 
   /// Comment reply count.
-  int get replyCount => throw _privateConstructorUsedError;
+  int get replyCount;
+  @override
+
+  /// True if the comment is hearted by the creator.
+//ignore: avoid_positional_boolean_parameters
+  bool get isHearted;
   @override
 
   /// Used internally.
   /// Shouldn't be used in the code.
   @internal
-  String? get continuation => throw _privateConstructorUsedError;
+  String? get continuation;
   @override
   @JsonKey(ignore: true)
   _$CommentCopyWith<_Comment> get copyWith =>

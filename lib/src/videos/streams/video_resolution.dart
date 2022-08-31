@@ -1,5 +1,10 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'video_resolution.g.dart';
+
 /// Width and height of a video.
-class VideoResolution {
+@JsonSerializable()
+class VideoResolution implements Comparable<VideoResolution> {
   /// Viewport width.
   final int width;
 
@@ -9,6 +14,27 @@ class VideoResolution {
   /// Initializes an instance of [VideoResolution]
   const VideoResolution(this.width, this.height);
 
+  factory VideoResolution.fromJson(Map<String, dynamic> json) =>
+      _$VideoResolutionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VideoResolutionToJson(this);
+
   @override
   String toString() => '${width}x$height';
+
+  @override
+  int compareTo(VideoResolution other) {
+    if (width == other.width && height == other.height) {
+      return 0;
+    }
+
+    if (width > other.width) {
+      return 1;
+    }
+
+    if (width == other.width && height > other.height) {
+      return 1;
+    }
+    return -1;
+  }
 }

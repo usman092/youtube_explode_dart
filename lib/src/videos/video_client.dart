@@ -3,8 +3,6 @@ import '../common/common.dart';
 import '../extensions/helpers_extension.dart';
 import '../reverse_engineering/pages/watch_page.dart';
 import '../reverse_engineering/youtube_http_client.dart';
-import 'closed_captions/closed_caption_client.dart';
-import 'comments/comments_client.dart';
 import 'videos.dart';
 
 /// Queries related to YouTube videos.
@@ -14,11 +12,19 @@ class VideoClient {
   /// Queries related to media streams of YouTube videos.
   final StreamsClient streamsClient;
 
+  /// Queries related to media streams of YouTube videos.
+  /// Alias of [streamsClient].
+  StreamsClient get streams => streamsClient;
+
   /// Queries related to closed captions of YouTube videos.
   final ClosedCaptionClient closedCaptions;
 
-  /// Queries related to a YouTube video.
+  /// Queries related to a YouTube video comments.
   final CommentsClient commentsClient;
+
+  /// Queries related to a YouTube video comments.
+  /// Alias of [commentsClient].
+  CommentsClient get comments => commentsClient;
 
   /// Initializes an instance of [VideoClient].
   VideoClient(this._httpClient)
@@ -41,6 +47,7 @@ class VideoClient {
                 .querySelector('meta[itemprop=uploadDate]')
                 ?.attributes['content']
                 ?.tryParseDateTime(),
+        playerResponse.videoUploadDate.toString(),
         playerResponse.videoPublishDate ??
             watchPage.root
                 .querySelector('meta[itemprop=datePublished]')

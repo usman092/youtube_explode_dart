@@ -17,13 +17,13 @@ class ClosedCaptionClient {
 
   ///
   // ignore: deprecated_member_use
-  ClosedCaptionClient.parse(String raw) : root = xml.parse(raw);
+  ClosedCaptionClient.parse(String raw) : root = xml.XmlDocument.parse(raw);
 
   ///
   static Future<ClosedCaptionClient> get(
       YoutubeHttpClient httpClient, Uri url) {
     final formatUrl = url.replaceQueryParameters({'fmt': 'srv3'});
-    return retry(() async {
+    return retry(httpClient, () async {
       var raw = await httpClient.getString(formatUrl);
       return ClosedCaptionClient.parse(raw);
     });

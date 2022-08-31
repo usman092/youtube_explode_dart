@@ -1,3 +1,59 @@
+## 1.12.0
+- Fix #207: Allow every character to be present in a username.
+- Fix shorts. Thanks to @prateekmedia.
+- Add raw upload date on Video model. Thanks to @Nikos Portolos.
+- Fix null values for selected fields when parsing chanel uploads. Thanks to @Nikos Portolos.
+
+## 1.11.0
+- BREAKING CHANGE: Removed `SearchClient.getVideosFromPage`, use `SearchClient.search` or `SearchClient.search.search`.
+- BREAKING CHANGE: `SearchClient.search` now returns `VideoSearchList` (List<Video>).
+- BREAKING CHANGE: Remove the `filter` variable, now use `SearchFilter`.
+- To get the filters use static access on `FeatureFilters`, `UploadDateFilter`, `TypesFilter`, `DurationFilters`, `SortFilters`.
+- Introduced `SearchClient.searchContent` to search for videos, channels and playlists.
+- Introduced `SearchClient.searchRaw` to manually parse the content and also get related videos and estimated results.
+- Fix #197: Fixed `withHighestBitrate()`.
+- Introduced: `List<VideoStreamInfo>.bestQuality`.
+
+## 1.10.10+2
+- Fix #194: Now closed-captions allow malformed utf8 as well.
+
+## 1.10.10+1
+- Deprecated `withHighestBitrate()` in favour of `bestQuality`. 
+
+## 1.10.10
+- Fix issue #136: Add `bannerUrl` getter for `Channel`.
+- Fix `ChannelClient.getByUsername` for `youtube.com/c/XXXX` channels.
+- Fix issue #192: Make nullable ChannelAboutPage's properties.
+
+## 1.10.9
+- Fix issue #180: YouTube throttling videos. - Thanks to @itssidhere.
+
+## 1.10.8
+- Added the following aliases: yt.videos.streams (instead of yt.videos.streamsClient) and yt.videos.comments (instead of yt.videos.commentsClient)
+- Re-add more test cases.
+- Implement `.describe()` on List<StreamInfo> which prints a formatted list like `youtube-dl -F` option. T
+- Fix muxed video extraction ( #172 )
+- Better dis/likes video extraction.
+
+## 1.10.7+1
+- Fix tests.
+- Remove debug leftovers.
+
+## 1.10.7
+- Fix the error of incomplete data loading on the Android emulator.
+- Fix error when the http-client is closed and the request is still running.
+- Fix extraction for DASH streams.
+
+## 1.10.6
+- Implement `Playlist.videoCount`.
+
+## 1.10.5+1
+- Export `CommentsList` class.
+
+
+## 1.10.5
+- Implement: `CommentsList.totalLength` (#150), `Comment.isHearted` (#151).
+
 ## 1.10.4
 - Fix infinite loop when getting channel uploads.
 
@@ -10,11 +66,11 @@
 ## 1.10.1
 - Fix issue #146: Closed Captions couldn't be extracted anymore.
 - Code cleanup.
- 
+
 
 ## 1.10.0
 - Fix issue #144: get_video_info was removed from yt.
-- Min sdk version now is 2.13.0 
+- Min sdk version now is 2.13.0
 - BREAKING CHANGE: New comments API implementation.
 
 ## 1.9.10
@@ -35,7 +91,7 @@
 ## 1.9.6
 - Fix comment client.
 - Fix issue #130 (ClosedCaptions)
- 
+
 
 ## 1.9.5
 - Temporary for issue #130

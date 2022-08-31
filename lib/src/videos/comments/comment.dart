@@ -27,6 +27,10 @@ class Comment with _$Comment {
     /// Comment reply count.
     int replyCount,
 
+    /// True if the comment is hearted by the creator.
+    //ignore: avoid_positional_boolean_parameters
+    bool isHearted,
+
     /// Used internally.
     /// Shouldn't be used in the code.
     @internal String? continuation,

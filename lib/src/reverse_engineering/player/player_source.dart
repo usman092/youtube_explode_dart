@@ -31,7 +31,7 @@ class PlayerSource {
             .stringMatch(root)
             ?.nullIfWhitespace;
     if (val == null) {
-      throw FatalFailureException('Could not find sts in player source.');
+      throw FatalFailureException('Could not find sts in player source.', 0);
     }
     return val;
   }
@@ -40,13 +40,13 @@ class PlayerSource {
   Iterable<CipherOperation> getCipherOperations() sync* {
     if (deciphererFuncBody == null) {
       throw FatalFailureException(
-          'Could not find signature decipherer function body.');
+          'Could not find signature decipherer function body.', 0);
     }
 
     var definitionBody = _getDeciphererDefinitionBody(deciphererFuncBody!);
     if (definitionBody == null) {
       throw FatalFailureException(
-          'Could not find signature decipherer definition body.');
+          'Could not find signature decipherer definition body.', 0);
     }
 
     for (final statement in deciphererFuncBody!.split(';')) {
@@ -108,7 +108,7 @@ class PlayerSource {
   static Future<PlayerSource> get(
       YoutubeHttpClient httpClient, String url) async {
     if (_cache[url]?.expired ?? true) {
-      var val = await retry(() async {
+      var val = await retry(httpClient, () async {
         var raw = await httpClient.getString(url);
         return PlayerSource.parse(raw);
       });

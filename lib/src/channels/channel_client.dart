@@ -1,21 +1,14 @@
-import 'package:youtube_explode_dart/src/channels/channel_uploads_list.dart';
-import 'package:youtube_explode_dart/src/reverse_engineering/pages/channel_page.dart';
-import 'package:youtube_explode_dart/src/reverse_engineering/pages/watch_page.dart';
-
 import '../common/common.dart';
 import '../extensions/helpers_extension.dart';
 import '../playlists/playlists.dart';
 import '../reverse_engineering/pages/channel_about_page.dart';
+import '../reverse_engineering/pages/channel_page.dart';
 import '../reverse_engineering/pages/channel_upload_page.dart';
+import '../reverse_engineering/pages/watch_page.dart';
 import '../reverse_engineering/youtube_http_client.dart';
 import '../videos/video.dart';
 import '../videos/video_id.dart';
-import 'channel.dart';
-import 'channel_id.dart';
-import 'channel_uploads_list.dart';
 import 'channels.dart';
-import 'username.dart';
-import 'video_sorting.dart';
 
 /// Queries related to YouTube channels.
 class ChannelClient {
@@ -31,8 +24,13 @@ class ChannelClient {
     id = ChannelId.fromString(id);
     var channelPage = await ChannelPage.get(_httpClient, id.value);
 
-    return Channel(id, channelPage.channelTitle, channelPage.channelLogoUrl,
-        channelPage.subscribersCount);
+    return Channel(
+      id,
+      channelPage.channelTitle,
+      channelPage.channelLogoUrl,
+      channelPage.channelBannerUrl,
+      channelPage.subscribersCount,
+    );
   }
 
   /// Gets the metadata associated with the channel of the specified user.
@@ -41,10 +39,15 @@ class ChannelClient {
   Future<Channel> getByUsername(dynamic username) async {
     username = Username.fromString(username);
 
-    var channelPage =
-        await ChannelPage.getByUsername(_httpClient, username.value);
-    return Channel(ChannelId(channelPage.channelId), channelPage.channelTitle,
-        channelPage.channelLogoUrl, channelPage.subscribersCount);
+    var channelPage = await ChannelPage.getByUsername(
+        _httpClient, (username as Username).value);
+    return Channel(
+      ChannelId(channelPage.channelId),
+      channelPage.channelTitle,
+      channelPage.channelLogoUrl,
+      channelPage.channelBannerUrl,
+      channelPage.subscribersCount,
+    );
   }
 
   /// Gets the info found on a YouTube Channel About page.
@@ -56,16 +59,17 @@ class ChannelClient {
     final aboutPage = await ChannelAboutPage.get(_httpClient, channelId.value);
 
     return ChannelAbout(
-        aboutPage.description,
-        aboutPage.viewCount,
-        aboutPage.joinDate,
-        aboutPage.title,
-        [
-          for (var e in aboutPage.avatar)
-            Thumbnail(Uri.parse(e['url']), e['height'], e['width'])
-        ],
-        aboutPage.country,
-        aboutPage.channelLinks);
+      aboutPage.description,
+      aboutPage.viewCount,
+      aboutPage.joinDate,
+      aboutPage.title,
+      [
+        for (var e in aboutPage.avatar)
+          Thumbnail(Uri.parse(e['url']), e['height'], e['width'])
+      ],
+      aboutPage.country,
+      aboutPage.channelLinks,
+    );
   }
 
   /// Gets the info found on a YouTube Channel About page.
@@ -74,22 +78,21 @@ class ChannelClient {
   Future<ChannelAbout> getAboutPageByUsername(dynamic username) async {
     username = Username.fromString(username);
 
-    var channelAboutPage =
+    var page =
         await ChannelAboutPage.getByUsername(_httpClient, username.value);
 
-    // TODO: Expose metadata from the [ChannelAboutPage] class.
-    var id = channelAboutPage.initialData;
     return ChannelAbout(
-        id.description,
-        id.viewCount,
-        id.joinDate,
-        id.title,
-        [
-          for (var e in id.avatar)
-            Thumbnail(Uri.parse(e['url']), e['height'], e['width'])
-        ],
-        id.country,
-        id.channelLinks);
+      page.description,
+      page.viewCount,
+      page.joinDate,
+      page.title,
+      [
+        for (var e in page.avatar)
+          Thumbnail(Uri.parse(e['url']), e['height'], e['width'])
+      ],
+      page.country,
+      page.channelLinks,
+    );
   }
 
   /// Gets the metadata associated with the channel
@@ -129,18 +132,20 @@ class ChannelClient {
     return ChannelUploadsList(
         page.uploads
             .map((e) => Video(
-                e.videoId,
-                e.videoTitle,
-                channel.title,
-                channelId,
-                e.videoUploadDate.toDateTime(),
-                null,
-                '',
-                e.videoDuration,
-                ThumbnailSet(e.videoId.value),
-                null,
-                Engagement(e.videoViews, null, null),
-                false))
+                  e.videoId,
+                  e.videoTitle,
+                  channel.title,
+                  channelId,
+                  e.videoUploadDate.toDateTime(),
+                  e.videoUploadDate,
+                  null,
+                  '',
+                  e.videoDuration,
+                  ThumbnailSet(e.videoId.value),
+                  null,
+                  Engagement(e.videoViews, null, null),
+                  false,
+                ))
             .toList(),
         channel.title,
         channelId,

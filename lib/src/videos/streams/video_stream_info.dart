@@ -1,35 +1,22 @@
 import 'streams.dart';
 
 /// YouTube media stream that contains video.
-abstract class VideoStreamInfo extends StreamInfo {
+mixin VideoStreamInfo on StreamInfo {
   /// Video codec.
-  final String videoCodec;
+  String get videoCodec;
 
   /// Video quality label, as seen on YouTube.
-  final String videoQualityLabel;
+  @Deprecated('Use qualityLabel')
+  String get videoQualityLabel;
 
   /// Video quality.
-  final VideoQuality videoQuality;
+  VideoQuality get videoQuality;
 
   /// Video resolution.
-  final VideoResolution videoResolution;
+  VideoResolution get videoResolution;
 
   /// Video framerate.
-  final Framerate framerate;
-
-  ///
-  VideoStreamInfo(
-      int tag,
-      Uri url,
-      StreamContainer container,
-      FileSize size,
-      Bitrate bitrate,
-      this.videoCodec,
-      this.videoQualityLabel,
-      this.videoQuality,
-      this.videoResolution,
-      this.framerate)
-      : super(tag, url, container, size, bitrate);
+  Framerate get framerate;
 }
 
 /// Extensions for Iterables of [VideoStreamInfo]
@@ -42,16 +29,15 @@ extension VideoStreamInfoExtension<T extends VideoStreamInfo> on Iterable<T> {
   /// a collection of video streams.
   /// This could be longer than [getAllVideoQualities] since this gives also all
   /// the different framerate values.
-  Set<String> getAllVideoQualitiesLabel() =>
-      map((e) => e.videoQualityLabel).toSet();
+  Set<String> getAllVideoQualitiesLabel() => map((e) => e.qualityLabel).toSet();
 
   /// Gets the stream with best video quality.
-  T withHighestBitrate() => sortByVideoQuality().last;
+  T get bestQuality => sortByVideoQuality().first;
 
   /// Gets the video streams sorted by highest video quality
   /// (then by framerate) in ascending order.
   /// This returns new list without editing the original list.
   List<T> sortByVideoQuality() => toList()
     ..sort((a, b) => b.framerate.compareTo(a.framerate))
-    ..sort((a, b) => b.videoQuality.index.compareTo(a.videoQuality.index));
+    ..sort((a, b) => b.videoResolution.compareTo(a.videoResolution));
 }

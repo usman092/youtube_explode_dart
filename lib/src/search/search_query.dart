@@ -1,5 +1,5 @@
+import '../../youtube_explode_dart.dart';
 import '../reverse_engineering/pages/search_page.dart';
-import '../reverse_engineering/youtube_http_client.dart';
 
 ///
 class SearchQuery {
@@ -15,8 +15,9 @@ class SearchQuery {
 
   /// Search a video.
   static Future<SearchQuery> search(
-      YoutubeHttpClient httpClient, String searchQuery) async {
-    var page = await SearchPage.get(httpClient, searchQuery);
+      YoutubeHttpClient httpClient, String searchQuery,
+      {SearchFilter filter = const SearchFilter('')}) async {
+    var page = await SearchPage.get(httpClient, searchQuery, filter: filter);
     return SearchQuery(httpClient, searchQuery, page);
   }
 
@@ -31,13 +32,13 @@ class SearchQuery {
   }
 
   /// Content of this search.
-  /// Contains either [SearchVideo] or [SearchPlaylist]
-  List<dynamic> get content => _page.initialData.searchContent;
+  /// Contains either [SearchVideo], [SearchPlaylist] or [SearchChannel]
+  List<dynamic> get content => _page.searchContent;
 
   /// Videos related to this search.
   /// Contains either [SearchVideo] or [SearchPlaylist]
-  List<dynamic> get relatedVideos => _page.initialData.relatedVideos;
+  List<dynamic> get relatedVideos => _page.relatedVideos;
 
   /// Returns the estimated search result count.
-  int get estimatedResults => _page.initialData.estimatedResults;
+  int get estimatedResults => _page.estimatedResults;
 }
